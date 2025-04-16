@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  padding: 0;
+}
+/* Hide the default number input spinner */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #ececec;
+  border-radius: 30px;
+}
+.custom-input-settings::placeholder {
+  font-size: x-small;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0755e9;
+  border-radius: 30px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5770ff;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}

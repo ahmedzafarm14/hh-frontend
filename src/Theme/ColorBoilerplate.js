@@ -1,0 +1,12 @@
+export const PrimaryColor = "#0755E9"; //Blue
+export const SecondaryColor = "#05005F"; //DarkBlue
+export const BackgroundColor = "#ffffff"; //White
+export const TextColor = "#000000"; //Black
+export const LightBackground = "#ECECEC"; //Gray
+export const AccentColor1 = "#99B6EB"; //MiddleBlue
+export const AccentColor2 = "#C3D8FF"; //LightBlue
+export const AccentColor3 = "#B0B0B0"; //DarkGray
+export const SuccessColor = "#6EC207"; //Green
+export const HighlightColor = "#8400FF"; //Purple
+export const RatingColor = "#FFE605"; //Yellow
+export const ErrorColor = "#F10606"; //Red
