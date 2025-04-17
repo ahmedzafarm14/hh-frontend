@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+// import useEffect from "react";
 import { IconButton, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Profile from "./Profile";

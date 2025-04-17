@@ -3,12 +3,7 @@ import Typography from "../../Theme/Typography.jsx";
 import { Link } from "react-router-dom";
 import InputField from "../../Components/InputField.jsx";
 import Button from "../../Components/Button.jsx";
-import {
-  PrimaryColor,
-  BackgroundColor,
-  TextColor,
-  LightBackground,
-} from "../../Theme/ColorBoilerplate.js";
+import { PrimaryColor, BackgroundColor } from "../../Theme/ColorBoilerplate.js";
 import Image from "../../Assets/Images/reserve.svg";
 
 export default function LoginPage() {

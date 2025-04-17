@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Card from "../../Components/Card";
 import InputField from "../../Components/InputField.jsx";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Typography from "../../Theme/Typography.jsx";
 import Dropdown from "../../Components/Dropdown.jsx";
 import FileUploader from "../../Components/FileUploader.jsx";
@@ -22,10 +22,10 @@ const Registration = ({ role = Role }) => {
   //   const [login] = useLoginMutation();
 
   // Handle alert close
-  const handleAlertClose = () => {
-    // setAlertMessage("");
-    // setAlertType("");
-  };
+  // const handleAlertClose = () => {
+  //   setAlertMessage("");
+  //   setAlertType("");
+  // };
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
