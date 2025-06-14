@@ -44,7 +44,7 @@ To set up the HostelHub frontend, follow these steps:
 3. **Run the application**:
 
    ```bash
-   npm start
+   npm run dev
    ```
 
 4. **Visit** `http://localhost:3000` in your browser.

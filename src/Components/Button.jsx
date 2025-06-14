@@ -1,6 +1,6 @@
 import React from "react";
 import Typography from "../Theme/Typography";
-import { ReactComponent as Google } from "../Assets/Images/Google.svg";
+// import { ReactComponent as Google } from "../Assets/Images/Google.svg";
 // import Loader from "./Loader";
 
 const Button = ({
@@ -38,7 +38,8 @@ const Button = ({
         className={`${className}`}
       >
         {/* {state ? <Loader /> : null} */}
-        {isGoogleLogin && <Google />}
+        {/* {isGoogleLogin && <Google />} */}
+        {isGoogleLogin}
         {text}
         {startIcon}
       </button>

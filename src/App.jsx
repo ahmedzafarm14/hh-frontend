@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import AppRoutes from "./routes";
+import AppRoutes from "./routes.jsx";
 
 function App() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
