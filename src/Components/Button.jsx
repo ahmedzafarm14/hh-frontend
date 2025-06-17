@@ -1,10 +1,7 @@
 import React from "react";
-import Typography from "../Theme/Typography";
-// import { ReactComponent as Google } from "../Assets/Images/Google.svg";
-// import Loader from "./Loader";
+import Typography from "../Theme/Typography.jsx";
 
 const Button = ({
-  state,
   text,
   onClick,
   height,
@@ -37,7 +34,6 @@ const Button = ({
         onClick={handleClick}
         className={`${className}`}
       >
-        {/* {state ? <Loader /> : null} */}
         {/* {isGoogleLogin && <Google />} */}
         {isGoogleLogin}
         {text}

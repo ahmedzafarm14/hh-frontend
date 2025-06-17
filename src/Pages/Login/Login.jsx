@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Typography from "../../Theme/Typography.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InputField from "../../Components/InputField.jsx";
 import Button from "../../Components/Button.jsx";
 import {
@@ -10,17 +10,37 @@ import {
   LightBackground,
 } from "../../Theme/ColorBoilerplate.js";
 import Image from "../../Assets/Images/reserve.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentTab } from "../../State/Slices/tabHandlerSlice.js";
+import { useLoginMutation } from "../../State/Services/userApi.js";
+import Loader from "../../Components/Loader.jsx";
+import SuccessMessage from "../../Components/SuccessMessage.jsx";
+import ErrorMessage from "../../Components/ErrorMessage.jsx";
+import { setUser } from "../../State/Slices/userSlice.js";
+import {
+  setErrorMessage,
+  setSuccessMessage,
+  clearMessages,
+} from "../../State/Slices/messageHandlerSlice.js";
 
 export default function LoginPage() {
   const [form, setForm] = useState({
     usernameOrEmail: "",
     password: "",
   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [login, { isLoading, isSuccess, isError, error }] = useLoginMutation();
+  const { errorMessage, successMessage } = useSelector(
+    (state) => state.messageHandler
+  );
+  const setCurrentTab = useSelector((state) => state.tabHandler.currentTab);
   useEffect(() => {
-    if (localStorage.getItem("currentTab")) {
-      localStorage.removeItem("currentTab");
+    if (setCurrentTab !== "login") {
+      dispatch(setCurrentTab(""));
     }
-  }, []);
+  }, [setCurrentTab, dispatch]);
+
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {

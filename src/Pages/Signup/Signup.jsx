@@ -10,18 +10,46 @@ import {
   LightBackground,
 } from "../../Theme/ColorBoilerplate.js";
 import Image from "../../Assets/Images/reserve.svg";
+import { useSignUpMutation } from "../../State/Services/userApi.js";
+import Loader from "../../Components/Loader.jsx";
+import ErrorMessage from "../../Components/ErrorMessage.jsx";
+import SuccessMessage from "../../Components/SuccessMessage.jsx";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setErrorMessage,
+  setSuccessMessage,
+  clearMessages,
+} from "../../State/Slices/messageHandlerSlice.js";
+import { clearCurrentTab } from "../../State/Slices/tabHandlerSlice.js";
+import { useNavigate } from "react-router-dom";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
-    usernameOrEmail: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: "",
     password: "",
   });
+
+  const navigate = useNavigate();
+
+  const currentTab = useSelector((state) => state.tabHandler.currentTab);
   useEffect(() => {
-    if (localStorage.getItem("currentTab")) {
-      localStorage.removeItem("currentTab");
+    if (currentTab) {
+      useDispatch(clearCurrentTab());
     }
   }, []);
-  const [submitting, setSubmitting] = useState(false);
+
+  const dispatch = useDispatch();
+  const errorMessage = useSelector(
+    (state) => state.messageHandler.errorMessage
+  );
+
+  const successMessage = useSelector(
+    (state) => state.messageHandler.successMessage
+  );
+  const [signUp, { isLoading }] = useSignUpMutation();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,25 +57,64 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    try {
+      if (form.password.length < 6) {
+        dispatch(
+          setErrorMessage("Password must be at least 6 characters long")
+        );
+        setTimeout(() => {
+          dispatch(clearMessages());
+        }, 5000);
+        return;
+      }
+      await signUp(form).unwrap();
+      const email = form.email;
+      setForm({
+        firstName: "",
+        lastName: "",
+        email: "",
+        role: "",
+        password: "",
+      });
+      dispatch(setSuccessMessage("Check Email for verification verification"));
+      setTimeout(() => {
+        dispatch(clearMessages());
+        navigate("/enter-code", {
+          state: { from: "signup", email: email },
+        });
+      }, 5000);
+    } catch (error) {
+      dispatch(
+        setErrorMessage(
+          error?.data?.error?.msg || error?.data?.error || "Signup failed"
+        )
+      );
+      console.error("Signup failed:", error);
+      setTimeout(() => {
+        dispatch(clearMessages());
+      }, 5000);
+    }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !submitting) {
+    if (e.key === "Enter") {
       handleSubmit(e);
     }
   };
 
   return (
     <div className="flex md:flex-col flex-row bg-TextColor">
+      {isLoading && <Loader />}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
+
       {/* Left Section */}
       <div className="relative flex-1 text-white">
         <div className="absolute inset-0">
           <img
             src={Image}
             alt="Hotel exterior"
-            fill
-            className="object-cover h-[99%] w-[100%]"
+            className="absolute inset-0 object-cover w-full h-full"
           />
           <div className="absolute inset-0 bg-black/40" />
         </div>
@@ -70,11 +137,11 @@ export default function SignupPage() {
         </div>
       </div>
       {/* Right Section */}
-      <div className="flex flex-1 min-h-screen flex-col md:p-8 text-white p-12">
-        <div className="mb-8 flex items-center justify-between">
+      <div className="flex flex-1 min-h-screen flex-col md:p-4 text-white pl-12 pr-12 py-8">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-1 text-BackgroundColor">
             <div className="h-4 w-4 bg-cyan-400 rounded-full ml-1"></div>
-            <span className="text-lg sm:text-base font-semibold">HMS</span>
+            <span className="text-lg sm:text-base font-semibold">HH</span>
           </div>
           <div className="mt-1 flex flex-row items-center gap-1">
             <Typography variant="body1"> Already have an account?</Typography>
@@ -89,15 +156,15 @@ export default function SignupPage() {
           </div>
         </div>
         <div className="flex justify-center my-auto flex-col items-center">
-          <div className="mb-8 text-center">
+          <div className="mb-4 text-center">
             <h2 className="mb-2 text-3xl font-bold">Welcome!</h2>
             <p className="text-AccentColor3">Create your account</p>
           </div>
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-sm flex flex-col gap-1"
+            className="w-full max-w-sm flex flex-col gap-0.8"
           >
-            <div className="flex gap-2 text-TextColor">
+            <div className="flex gap-1 text-TextColor">
               <InputField
                 height="40px"
                 width="100%"
@@ -106,6 +173,7 @@ export default function SignupPage() {
                 onChange={handleChange}
                 name="firstName"
                 onKeyPress={handleKeyPress}
+                autoComplete="First Name"
               />
               <InputField
                 height="40px"
@@ -115,18 +183,44 @@ export default function SignupPage() {
                 onChange={handleChange}
                 name="lastName"
                 onKeyPress={handleKeyPress}
+                autoComplete="Last Name"
               />
             </div>
             <div className="text-TextColor flex flex-col gap-1">
               <InputField
                 height="40px"
                 width="100%"
-                placeholder="Email or username"
+                placeholder="Email"
                 type="text"
                 onChange={handleChange}
-                name="usernameOrEmail"
+                name="email"
                 onKeyPress={handleKeyPress}
+                autoComplete="Email"
               />
+
+              <select
+                id="role"
+                name="role"
+                value={form.role}
+                onChange={handleChange}
+                placeholder="Select your role"
+                style={{
+                  height: "40px",
+                  marginBottom: "8px",
+                }}
+                className="w-full bg-white text-black border border-LightBackground rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              >
+                <option value="" disabled className="text-gray-400">
+                  Select your role
+                </option>
+                <option value="resident" className="text-black">
+                  Resident
+                </option>
+                <option value="owner" className="text-black">
+                  Owner
+                </option>
+              </select>
+
               <InputField
                 height="40px"
                 width="100%"
@@ -135,6 +229,7 @@ export default function SignupPage() {
                 onChange={handleChange}
                 name="password"
                 onKeyPress={handleKeyPress}
+                autoComplete="password"
               />
             </div>
             <Button
@@ -142,7 +237,6 @@ export default function SignupPage() {
               type="submit"
               height="40px"
               width="100%"
-              state={submitting ? true : false}
               customColor={BackgroundColor}
               bgColor={PrimaryColor}
               className="rounded-md"

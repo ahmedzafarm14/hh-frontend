@@ -1,6 +1,4 @@
-import { emptySplitApi } from "./Api.js";
-
-const apiKey = String(process.env.REACT_APP_API_KEY);
+import { emptySplitApi } from "./emptySplitApi.js";
 
 export const userApi = emptySplitApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,9 +6,6 @@ export const userApi = emptySplitApi.injectEndpoints({
       query: (form) => ({
         method: "POST",
         url: "/api/user/register/",
-        headers: {
-          "x-api-key": apiKey,
-        },
         body: form,
       }),
     }),
@@ -18,10 +13,7 @@ export const userApi = emptySplitApi.injectEndpoints({
     login: builder.mutation({
       query: (form) => ({
         method: "POST",
-        url: "/user/login/",
-        headers: {
-          "x-api-key": apiKey,
-        },
+        url: "/api/user/login/",
         body: form,
       }),
     }),
@@ -29,10 +21,7 @@ export const userApi = emptySplitApi.injectEndpoints({
     verifyOTP: builder.mutation({
       query: ({ otp, email, from }) => ({
         method: "POST",
-        url: "/user/verify-otp/",
-        headers: {
-          "x-api-key": apiKey,
-        },
+        url: "/api/user/verify-otp/",
         body: {
           email,
           otp,
@@ -45,9 +34,7 @@ export const userApi = emptySplitApi.injectEndpoints({
       query: (email) => ({
         method: "POST",
         url: "/user/reset-password-request/",
-        headers: {
-          "x-api-key": apiKey,
-        },
+
         body: {
           email,
         },
@@ -58,9 +45,6 @@ export const userApi = emptySplitApi.injectEndpoints({
       query: (data) => ({
         method: "POST",
         url: "/user/reset-password-confirm/",
-        headers: {
-          "x-api-key": apiKey,
-        },
         body: data,
       }),
     }),
@@ -68,10 +52,7 @@ export const userApi = emptySplitApi.injectEndpoints({
     resendOTP: builder.mutation({
       query: (email) => ({
         method: "POST",
-        url: "/user/resend-otp/",
-        headers: {
-          "x-api-key": apiKey,
-        },
+        url: "/api/user/resend-otp/",
         body: { email },
       }),
     }),
@@ -80,9 +61,6 @@ export const userApi = emptySplitApi.injectEndpoints({
       query: () => ({
         method: "POST",
         url: "/user/auth-provider/",
-        headers: {
-          "x-api-key": apiKey,
-        },
       }),
       invalidatesTags: ["LogInStatus"],
     }),
@@ -91,9 +69,6 @@ export const userApi = emptySplitApi.injectEndpoints({
       query: () => ({
         method: "POST",
         url: "/user/profile/",
-        headers: {
-          "x-api-key": apiKey,
-        },
       }),
       invalidatesTags: ["Profile"],
     }),

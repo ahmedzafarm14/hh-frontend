@@ -14,6 +14,7 @@ const InputField = ({
   pattern,
   isOTP = false, // Prop to determine if this is an OTP input
   length = 6, // Number of OTP input fields
+  autoComplete,
 }) => {
   const [inputType, setInputType] = useState(type);
   const [otpValues, setOtpValues] = useState(Array(length).fill(""));
@@ -77,6 +78,7 @@ const InputField = ({
             onChange={onChange}
             name={name}
             pattern={pattern}
+            {...(autoComplete ? { autoComplete } : {})}
           />
           {type === "password" && (
             <span
