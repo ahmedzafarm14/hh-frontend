@@ -33,8 +33,7 @@ export const userApi = emptySplitApi.injectEndpoints({
     requestPasswordReset: builder.mutation({
       query: (email) => ({
         method: "POST",
-        url: "/user/reset-password-request/",
-
+        url: "/api/user/reset-password-request/",
         body: {
           email,
         },
@@ -44,7 +43,7 @@ export const userApi = emptySplitApi.injectEndpoints({
     resetPasswordConfirm: builder.mutation({
       query: (data) => ({
         method: "POST",
-        url: "/user/reset-password-confirm/",
+        url: "/api/user/reset-password-confirm/",
         body: data,
       }),
     }),
@@ -56,22 +55,6 @@ export const userApi = emptySplitApi.injectEndpoints({
         body: { email },
       }),
     }),
-
-    authProvider: builder.mutation({
-      query: () => ({
-        method: "POST",
-        url: "/user/auth-provider/",
-      }),
-      invalidatesTags: ["LogInStatus"],
-    }),
-
-    getProfile: builder.mutation({
-      query: () => ({
-        method: "POST",
-        url: "/user/profile/",
-      }),
-      invalidatesTags: ["Profile"],
-    }),
   }),
 });
 
@@ -82,6 +65,4 @@ export const {
   useRequestPasswordResetMutation,
   useResetPasswordConfirmMutation,
   useResendOTPMutation,
-  useAuthProviderMutation,
-  useGetProfileMutation,
 } = userApi;

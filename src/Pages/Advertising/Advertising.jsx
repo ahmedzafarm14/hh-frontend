@@ -9,9 +9,8 @@ import { Modal, Box } from "@mui/material";
 import InputField from "../../Components/InputField.jsx";
 import AdCreator from "../../Components/AddCreator.jsx";
 import TextAreaComponent from "../../Components/TextArea.jsx";
-import { Role } from "../../Utlis/constants";
 
-export default function Advertising({ role = Role }) {
+export default function Advertising({ role }) {
   const [listings, setListings] = useState([
     {
       id: 1,

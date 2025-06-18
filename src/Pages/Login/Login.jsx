@@ -3,15 +3,10 @@ import Typography from "../../Theme/Typography.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import InputField from "../../Components/InputField.jsx";
 import Button from "../../Components/Button.jsx";
-import {
-  PrimaryColor,
-  BackgroundColor,
-  TextColor,
-  LightBackground,
-} from "../../Theme/ColorBoilerplate.js";
+import { PrimaryColor, BackgroundColor } from "../../Theme/ColorBoilerplate.js";
 import Image from "../../Assets/Images/reserve.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { setCurrentTab } from "../../State/Slices/tabHandlerSlice.js";
+import { clearCurrentTab } from "../../State/Slices/tabHandlerSlice.js";
 import { useLoginMutation } from "../../State/Services/userApi.js";
 import Loader from "../../Components/Loader.jsx";
 import SuccessMessage from "../../Components/SuccessMessage.jsx";
@@ -25,23 +20,22 @@ import {
 
 export default function LoginPage() {
   const [form, setForm] = useState({
-    usernameOrEmail: "",
+    email: "",
     password: "",
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [login, { isLoading, isSuccess, isError, error }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const { errorMessage, successMessage } = useSelector(
     (state) => state.messageHandler
   );
-  const setCurrentTab = useSelector((state) => state.tabHandler.currentTab);
-  useEffect(() => {
-    if (setCurrentTab !== "login") {
-      dispatch(setCurrentTab(""));
-    }
-  }, [setCurrentTab, dispatch]);
 
-  const [submitting, setSubmitting] = useState(false);
+  const currentTab = useSelector((state) => state.tabHandler.currentTab);
+  useEffect(() => {
+    if (currentTab) {
+      dispatch(clearCurrentTab());
+    }
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -49,25 +43,52 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    dispatch(clearMessages());
+    try {
+      const response = await login(form).unwrap();
+      if (response) {
+        const data = {
+          token: response.result.token,
+          user: response.result.personData,
+          role: response.result.personData.role,
+        };
+        dispatch(setUser(data));
+        dispatch(setSuccessMessage(response.message || "Login successful!"));
+        setTimeout(() => {
+          dispatch(clearMessages());
+          if (data.role === "resident") {
+          } else if (data.role === "owner") {
+            navigate("/dashboard");
+          }
+        }, 3000);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      dispatch(setErrorMessage(err.data?.message || "Login failed!"));
+      setTimeout(() => {
+        dispatch(clearMessages());
+      }, 3000);
+    }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !submitting) {
+    if (e.key === "Enter") {
       handleSubmit(e);
     }
   };
 
   return (
     <div className="flex md:flex-col flex-row bg-TextColor">
+      {isLoading && <Loader />}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
       {/* Left Section */}
       <div className="relative flex-1 text-white">
         <div className="absolute inset-0">
           <img
             src={Image}
             alt="Hotel exterior"
-            fill
-            className="object-cover h-[99%] w-[100%]"
+            className="object-cover h-[100%] w-[100%]"
           />
           <div className="absolute inset-0 bg-black/40" />
         </div>
@@ -94,7 +115,7 @@ export default function LoginPage() {
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-1 text-BackgroundColor">
             <div className="h-4 w-4 bg-cyan-400 rounded-full ml-1"></div>
-            <span className="text-lg sm:text-base font-semibold">HMS</span>
+            <span className="text-lg sm:text-base font-semibold">HH</span>
           </div>
           <div className="mt-1 flex flex-row items-center gap-1">
             <Typography variant="body1">Don't have an account?</Typography>
@@ -124,7 +145,8 @@ export default function LoginPage() {
                 placeholder="Email or username"
                 type="text"
                 onChange={handleChange}
-                name="usernameOrEmail"
+                name="email"
+                autoComplete="email"
                 onKeyPress={handleKeyPress}
               />
               <InputField
@@ -134,6 +156,7 @@ export default function LoginPage() {
                 type="password"
                 onChange={handleChange}
                 name="password"
+                autoComplete="password"
                 onKeyPress={handleKeyPress}
               />
             </div>
@@ -150,27 +173,9 @@ export default function LoginPage() {
               type="submit"
               height="40px"
               width="100%"
-              state={submitting ? true : false}
               customColor={BackgroundColor}
               bgColor={PrimaryColor}
               className="rounded-md"
-            />
-            <div className="flex items-center my-2">
-              <hr className="flex-grow border-t border-LightBackground" />
-              <Typography variant="body1" className="mx-4 text-AccentColor3">
-                Or
-              </Typography>
-              <hr className="flex-grow border-t border-LightBackground" />
-            </div>
-            <Button
-              text="Google"
-              type="button"
-              height="40px"
-              width="100%"
-              customColor={TextColor}
-              bgColor={LightBackground}
-              onClick={() => alert("Google button clicked")}
-              className="rounded-md py-2 my-2 shadow-md"
             />
           </form>
 

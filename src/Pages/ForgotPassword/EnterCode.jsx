@@ -12,7 +12,6 @@ import {
   setSuccessMessage,
   clearMessages,
 } from "../../State/Slices/messageHandlerSlice.js";
-import { clearCurrentTab } from "../../State/Slices/tabHandlerSlice.js"; // Added import
 import {
   useVerifyOTPMutation,
   useResendOTPMutation,
@@ -35,7 +34,6 @@ export default function LoginPage() {
   const { errorMessage, successMessage } = useSelector(
     (state) => state.messageHandler
   );
-  const currentTab = useSelector((state) => state.tabHandler.currentTab);
 
   const location = useLocation();
 
@@ -54,13 +52,6 @@ export default function LoginPage() {
       }));
     }
   }, [location.state, navigate, dispatch]);
-
-  // Clear currentTab if it exists
-  useEffect(() => {
-    if (currentTab) {
-      dispatch(clearCurrentTab());
-    }
-  }, [currentTab, dispatch]); // Added currentTab to dependencies
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -84,7 +75,7 @@ export default function LoginPage() {
     }
 
     try {
-      await verifyOTP({
+      const response = await verifyOTP({
         otp: form.otp,
         email: form.email,
         from: form.from,
@@ -97,7 +88,10 @@ export default function LoginPage() {
       if (from === "reset-password") {
         setTimeout(() => {
           dispatch(clearMessages());
-          navigate("/reset-password", { state: { email } });
+          console.log(response.securityKey);
+          navigate("/reset-password", {
+            state: { email, securityKey: response.securityKey },
+          });
         }, 2500);
       } else if (from === "signup") {
         setTimeout(() => {
@@ -201,10 +195,11 @@ export default function LoginPage() {
                 height="40px"
                 width="100%"
                 placeholder="000000"
-                type="text" // Changed to text for better control
+                type="text"
                 onChange={handleChange}
                 name="otp"
                 value={form.otp}
+                autoComplete="otp"
                 onKeyPress={handleKeyPress}
                 aria-label="Enter 6-digit OTP"
                 aria-describedby="otp-error"

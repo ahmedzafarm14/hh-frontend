@@ -5,28 +5,25 @@ import Sidebar from "../Components/Sidebar.jsx";
 import Registration from "../Pages/Registration/Registration.jsx";
 import Chat from "../Pages/Chat/Chats.jsx";
 import Advertising from "../Pages/Advertising/Advertising.jsx";
-import { Role } from "../Utlis/constants.js";
 import Management from "../Pages/Management/Management.jsx";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setCurrentTab,
+  clearCurrentTab,
+} from "../State/Slices/tabHandlerSlice.js";
 
-const Layout = ({ role = Role }) => {
+const Layout = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const currentTab = useSelector((state) => state.tabHandler.currentTab);
+  const { role } = useSelector((state) => state.user);
 
-  const [currentTab, setCurrentTab] = useState(() => {
-    const storedTab = localStorage.getItem("currentTab");
-    if (storedTab) return storedTab;
-    return role === "owner" ? "Registration" : "Registration";
-  });
-
-  const [changeTab, setChangeTab] = useState(() => {
-    const storedTab = localStorage.getItem("currentTab");
-    if (storedTab) return storedTab;
-    return role === "owner" ? "Registration" : "Registration";
-  });
+  const [changeTab, setChangeTab] = useState(currentTab || "Registration");
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("currentTab", changeTab);
+    dispatch(setCurrentTab(changeTab));
 
     switch (changeTab) {
       case "Registration":
@@ -47,7 +44,7 @@ const Layout = ({ role = Role }) => {
   }, [changeTab, navigate]);
 
   const handleTabChange = (tab) => {
-    setCurrentTab(tab);
+    dispatch(setCurrentTab(tab));
     setChangeTab(tab);
     setIsSidebarOpen(false);
   };
@@ -91,15 +88,9 @@ const Layout = ({ role = Role }) => {
             role={role}
           />
         </div>
-        {/* {role === "owner" ? (
-          <div className="flex-grow ml-56 xxm:ml-0">
-            <div className="px-3 pt-2 xxm:pt-12 pb-3">{renderContent()}</div>
-          </div>
-        ) : ( */}
         <div className="flex-grow">
           <div className="px-4 pt-2 pb-3">{renderContent()}</div>
         </div>
-        {/* )} */}
       </div>
     </div>
   );

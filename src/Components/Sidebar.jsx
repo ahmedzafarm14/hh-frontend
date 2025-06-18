@@ -3,7 +3,6 @@ import { Drawer } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "../Theme/Typography";
-import { Role } from "../Utlis/constants";
 
 const Sidebar = ({
   isOpen,
@@ -11,7 +10,6 @@ const Sidebar = ({
   currentTab,
   changeTab,
   setChangeTab,
-  role = Role,
 }) => {
   const renderSidebarItemsUser = () => {
     return (

@@ -7,9 +7,8 @@ import Dropdown from "../../Components/Dropdown.jsx";
 import FileUploader from "../../Components/FileUploader.jsx";
 import { PrimaryColor, BackgroundColor } from "../../Theme/ColorBoilerplate.js";
 import Button from "../../Components/Button.jsx";
-import { Role } from "../../Utlis/constants";
 
-const Registration = ({ role = Role }) => {
+const Registration = ({ role }) => {
   const [form, setForm] = useState({
     usernameOrEmail: "",
     password: "",

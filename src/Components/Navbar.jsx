@@ -1,19 +1,11 @@
 import React from "react";
-// import useEffect from "react";
 import { IconButton, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Profile from "./Profile";
 import Calendar from "./Calendar";
 import Notification from "./Notification";
-import { Role } from "../Utlis/constants";
 
-export default function Navbar({
-  toggleSidebar,
-  onTabChange,
-  currentTab,
-  setChangeTab,
-  role = Role,
-}) {
+export default function Navbar({ toggleSidebar, onTabChange, currentTab }) {
   const tabs =
     // role === "owner"
     //   ? ["Registration", "Management", "Chat", "Advertising"]

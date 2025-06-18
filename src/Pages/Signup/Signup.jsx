@@ -241,23 +241,6 @@ export default function SignupPage() {
               bgColor={PrimaryColor}
               className="rounded-md"
             />
-            <div className="flex items-center my-2">
-              <hr className="flex-grow border-t border-LightBackground" />
-              <Typography variant="body1" className="mx-4 text-AccentColor3">
-                Or
-              </Typography>
-              <hr className="flex-grow border-t border-LightBackground" />
-            </div>
-            <Button
-              text="Google"
-              type="button"
-              height="40px"
-              width="100%"
-              customColor={TextColor}
-              bgColor={LightBackground}
-              onClick={() => alert("Google button clicked")}
-              className="rounded-md py-2 my-2 shadow-md"
-            />
           </form>
 
           <p className="mt-8 text-center text-sm text-gray-500">

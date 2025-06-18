@@ -10,15 +10,16 @@ import Registration from "./Pages/Registration/Registration.jsx";
 import Chat from "./Pages/Chat/Chats.jsx";
 import Advertising from "./Pages/Chat/Chats.jsx";
 import Management from "./Pages/Management/Management.jsx";
-import { Role } from "./Utlis/constants.js";
 import LandLayout from "./Layout/LandLayout.jsx";
 import LandingPage from "./Pages/Landing Page/index.jsx";
 import Hostels from "./Pages/Landing Page/Hostels.jsx";
 import HostelDetails from "./Components/HostelDetails.jsx";
 import RoomDetails from "./Components/RoomDetails.jsx";
 import Reserve from "./Components/Reserve.jsx";
+import { useSelector } from "react-redux";
 
-const AppRoutes = ({ isSidebarOpen, toggleSidebar, role = Role }) => {
+const AppRoutes = ({ isSidebarOpen, toggleSidebar }) => {
+  const { role } = useSelector((state) => state.user);
   return (
     <Routes>
       {/* Common routes */}
