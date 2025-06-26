@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentTab: null,
+  toggleSidebar: false,
 };
 
 export const tabHandlerSlice = createSlice({
@@ -14,8 +15,12 @@ export const tabHandlerSlice = createSlice({
     clearCurrentTab: (state) => {
       state.currentTab = null;
     },
+    setToggleSidebar: (state) => {
+      state.toggleSidebar = !state.toggleSidebar;
+    },
   },
 });
 
-export const { setCurrentTab, clearCurrentTab } = tabHandlerSlice.actions;
+export const { setCurrentTab, clearCurrentTab, setToggleSidebar } =
+  tabHandlerSlice.actions;
 export default tabHandlerSlice.reducer;

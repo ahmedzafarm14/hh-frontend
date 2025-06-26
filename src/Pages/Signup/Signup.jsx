@@ -125,15 +125,17 @@ export default function SignupPage() {
             You can view the list of hostels even if you&apos;re not the
             registered user.
           </p>
-          <Button
-            text=" View Hostels"
-            type="button"
-            height="40px"
-            width="100%"
-            customColor={BackgroundColor}
-            bgColor={PrimaryColor}
-            className="rounded-md px-8"
-          />
+          <Link to="/hostels">
+            <Button
+              text=" View Hostels"
+              type="button"
+              height="40px"
+              width="100%"
+              customColor={BackgroundColor}
+              bgColor={PrimaryColor}
+              className="rounded-md px-8"
+            />
+          </Link>
         </div>
       </div>
       {/* Right Section */}

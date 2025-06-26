@@ -1,31 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../Components/Navbar.jsx";
 import Sidebar from "../Components/Sidebar.jsx";
 import Registration from "../Pages/Registration/Registration.jsx";
 import Chat from "../Pages/Chat/Chats.jsx";
 import Advertising from "../Pages/Advertising/Advertising.jsx";
 import Management from "../Pages/Management/Management.jsx";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  setCurrentTab,
-  clearCurrentTab,
-} from "../State/Slices/tabHandlerSlice.js";
+import { setCurrentTab } from "../State/Slices/tabHandlerSlice.js";
 
 const Layout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentTab = useSelector((state) => state.tabHandler.currentTab);
-  const { role } = useSelector((state) => state.user);
-
-  const [changeTab, setChangeTab] = useState(currentTab || "Registration");
-
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const role = useSelector((state) => state.user.role);
 
   useEffect(() => {
-    dispatch(setCurrentTab(changeTab));
+    if (!currentTab && role === "owner") {
+      dispatch(setCurrentTab("Registration"));
+    }
 
-    switch (changeTab) {
+    switch (currentTab) {
       case "Registration":
         navigate("/registration");
         break;
@@ -41,16 +36,10 @@ const Layout = () => {
       default:
         break;
     }
-  }, [changeTab, navigate]);
-
-  const handleTabChange = (tab) => {
-    dispatch(setCurrentTab(tab));
-    setChangeTab(tab);
-    setIsSidebarOpen(false);
-  };
+  }, [currentTab, role, navigate, dispatch]);
 
   const renderContent = () => {
-    switch (changeTab) {
+    switch (currentTab) {
       case "Registration":
         return <Registration />;
       case "Chat":
@@ -66,32 +55,15 @@ const Layout = () => {
 
   return (
     <div className="h-screen flex flex-col overflow-x-hidden">
-      <div className="fixed top-0 left-0 right-0 z-10 ">
-        <Navbar
-          toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-          currentTab={currentTab}
-          onTabChange={handleTabChange}
-          changeTab={changeTab}
-          setChangeTab={setChangeTab}
-          role={role}
-        />
+      {/* Navbar stays fixed */}
+      <div className="fixed top-0 left-0 right-0 z-20">
+        <Navbar />
       </div>
-      <div className="flex pt-16">
-        <div className="fixed left-0 top-14 bottom-0 z-10">
-          <Sidebar
-            isOpen={isSidebarOpen}
-            toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-            currentTab={currentTab}
-            onTabChange={handleTabChange}
-            changeTab={changeTab}
-            setChangeTab={setChangeTab}
-            role={role}
-          />
-        </div>
-        <div className="flex-grow">
-          <div className="px-4 pt-2 pb-3">{renderContent()}</div>
-        </div>
+      <div className="flex pt-16 h-full">
+        {/* Main Page Content */}
+        <div className="flex-grow w-full px-4 pt-2 pb-3">{renderContent()}</div>
       </div>
+      <Sidebar />
     </div>
   );
 };

@@ -1,113 +1,70 @@
 import React from "react";
 import { Drawer } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "../Theme/Typography";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setToggleSidebar,
+  setCurrentTab,
+} from "../State/Slices/tabHandlerSlice";
 
-const Sidebar = ({
-  isOpen,
-  toggleSidebar,
-  currentTab,
-  changeTab,
-  setChangeTab,
-}) => {
-  const renderSidebarItemsUser = () => {
-    return (
-      <>
-        <div
-          className={`flex items-center rounded-md cursor-pointer px-2 py-3 ${
-            changeTab === "Registration"
-              ? "bg-BackgroundColor text-TextColor"
-              : "text-LightBackground hover:bg-blue-600"
-          }`}
-          onClick={(event) => {
-            event.stopPropagation();
-            setChangeTab("Registration");
-          }}
-        >
-          {/* <DashboardOutlinedIcon className="mr-2" fontSize="small" /> */}
-          <Typography variant="body1">Registration</Typography>
-        </div>
-        <div
-          className={`flex items-center rounded-md cursor-pointer px-2 py-3 ${
-            changeTab === "Chat"
-              ? "bg-BackgroundColor text-TextColor"
-              : "text-LightBackground hover:bg-blue-600"
-          }`}
-          onClick={(event) => {
-            event.stopPropagation();
-            setChangeTab("Chat");
-          }}
-        >
-          {/* <ListRoundedIcon className="mr-2" fontSize="small" /> */}
-          <Typography variant="body1">Chat</Typography>
-        </div>
-        <div
-          className={`flex items-center rounded-md cursor-pointer px-2 py-3 ${
-            changeTab === "Advertising"
-              ? "bg-BackgroundColor text-TextColor"
-              : "text-LightBackground hover:bg-blue-600"
-          }`}
-          onClick={(event) => {
-            event.stopPropagation();
-            setChangeTab("Advertising");
-          }}
-        >
-          {/* <DateRangeOutlinedIcon className="mr-2" fontSize="small" /> */}
-          <Typography variant="body1">Advertising</Typography>
-        </div>
-        <div
-          className={`flex items-center rounded-md cursor-pointer px-2 py-3 ${
-            changeTab === "Management"
-              ? "bg-BackgroundColor text-TextColor"
-              : "text-LightBackground hover:bg-blue-600"
-          }`}
-          onClick={(event) => {
-            event.stopPropagation();
-            setChangeTab("Management");
-          }}
-        >
-          {/* <NewReleasesOutlinedIcon className="mr-2" fontSize="small" /> */}
-          <Typography variant="body1">Management</Typography>
-        </div>
-      </>
-    );
+const Sidebar = () => {
+  const dispatch = useDispatch();
+  const isOpen = useSelector((state) => state.tabHandler.toggleSidebar);
+  const currentTab = useSelector((state) => state.tabHandler.currentTab);
+  const role = useSelector((state) => state.user.role);
+
+  const tabs =
+    role === "owner"
+      ? ["Registration", "Management", "Chat", "Advertising"]
+      : [];
+
+  const handleTabClick = (tab) => {
+    if (currentTab !== tab) {
+      dispatch(setCurrentTab(tab));
+    }
+    dispatch(setToggleSidebar());
   };
+
+  const renderSidebarItems = () =>
+    tabs.map((tab) => (
+      <div
+        key={tab}
+        className={`flex items-center rounded-md cursor-pointer px-2 py-3 ${
+          currentTab === tab
+            ? "bg-BackgroundColor text-TextColor"
+            : "text-LightBackground hover:bg-blue-600"
+        }`}
+        onClick={(event) => {
+          event.stopPropagation();
+          handleTabClick(tab);
+        }}
+      >
+        <Typography variant="body1">{tab}</Typography>
+      </div>
+    ));
 
   return (
     <>
-      {/* Sidebar for smaller screens */}
+      {/* Mobile Sidebar */}
       <Drawer
         variant="temporary"
         anchor="left"
         open={isOpen}
-        onClose={toggleSidebar}
-        className="xxm:flex hidden w-60"
-        classes={{ paper: "bg-PrimaryColor text-white" }}
+        onClose={() => dispatch(setToggleSidebar())}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        classes={{ paper: "bg-PrimaryColor text-white w-60" }}
       >
-        <div className="h-full w-52 p-2 flex flex-col bg-PrimaryColor">
+        <div className="h-full p-2 flex flex-col bg-PrimaryColor">
           <CloseIcon
-            onClick={toggleSidebar}
-            className="text-white self-end m-2"
-            aria-label="Close Sidebar"
-          >
-            <MenuIcon />
-          </CloseIcon>
-          <div className="flex flex-col bg-PrimaryColor mt-3">
-            {/* {role === "owner" && renderSidebarItems()} */}
-            {renderSidebarItemsUser()}
-          </div>
+            onClick={() => dispatch(setToggleSidebar())}
+            className="text-white self-end m-2 cursor-pointer"
+          />
+          <div className="flex flex-col mt-3">{renderSidebarItems()}</div>
         </div>
       </Drawer>
-
-      {/* Sidebar for larger screens */}
-      {/* {role === "owner" && (
-        <div className="xxm:hidden flex bg-customWhite p-2 h-full">
-          <div className="flex flex-col p-2 w-52 bg-PrimaryColor rounded-md text-LightBackground">
-            <div className="flex flex-col">{renderSidebarItems()}</div>
-          </div>
-        </div>
-      )} */}
     </>
   );
 };

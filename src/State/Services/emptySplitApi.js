@@ -3,8 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const emptySplitApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BACKEND_PRODUCTION_URL,
-    // baseUrl: import.meta.env.VITE_BACKEND_LOCAL_URL,
+    // baseUrl: import.meta.env.VITE_BACKEND_PRODUCTION_URL,
+    baseUrl: import.meta.env.VITE_BACKEND_LOCAL_URL,
     credentials: "include", // It includes cookies
     prepareHeaders: (headers, { getState }) => {
       headers.set("accept", "application/json");

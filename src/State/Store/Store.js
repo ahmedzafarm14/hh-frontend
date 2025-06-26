@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { emptySplitApi } from "../Services/emptySplitApi.js";
-import storage from "redux-persist/lib/storage";
+import sessionStorage from "redux-persist/lib/storage/session";
 import { persistReducer, persistStore } from "redux-persist";
 import userReducer from "../Slices/userSlice.js";
 import messageHandlerReducer from "../Slices/messageHandlerSlice.js";
@@ -8,7 +8,7 @@ import tabHandlerReducer from "../Slices/tabHandlerSlice.js";
 
 const persistConfig = {
   key: "root",
-  storage,
+  storage: sessionStorage,
   whitelist: ["user", "tabHandler"], // persisted slices
 };
 

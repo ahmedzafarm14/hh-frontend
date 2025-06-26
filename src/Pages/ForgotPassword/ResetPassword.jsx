@@ -15,7 +15,6 @@ import {
   setSuccessMessage,
   clearMessages,
 } from "../../State/Slices/messageHandlerSlice.js";
-import { Email } from "@mui/icons-material";
 
 export default function LoginPage() {
   const [form, setForm] = useState({

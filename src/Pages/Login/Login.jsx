@@ -54,13 +54,12 @@ export default function LoginPage() {
         };
         dispatch(setUser(data));
         dispatch(setSuccessMessage(response.message || "Login successful!"));
-        setTimeout(() => {
-          dispatch(clearMessages());
-          if (data.role === "resident") {
-          } else if (data.role === "owner") {
-            navigate("/dashboard");
-          }
-        }, 3000);
+        dispatch(clearMessages());
+        if (data.role === "resident") {
+          navigate("/hostels");
+        } else if (data.role === "owner") {
+          navigate("/registration");
+        }
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -99,15 +98,17 @@ export default function LoginPage() {
             You can view the list of hostels even if you&apos;re not the
             registered user.
           </p>
-          <Button
-            text=" View Hostels"
-            type="button"
-            height="40px"
-            width="100%"
-            customColor={BackgroundColor}
-            bgColor={PrimaryColor}
-            className="rounded-md px-8"
-          />
+          <Link to="/hostels">
+            <Button
+              text=" View Hostels"
+              type="button"
+              height="40px"
+              width="100%"
+              customColor={BackgroundColor}
+              bgColor={PrimaryColor}
+              className="rounded-md px-8"
+            />
+          </Link>
         </div>
       </div>
       {/* Right Section */}
