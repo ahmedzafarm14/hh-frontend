@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../Components/Navbar.jsx";
 import Sidebar from "../Components/Sidebar.jsx";
-import Registration from "../Pages/Registration/Registration.jsx";
 import Chat from "../Pages/Chat/Chats.jsx";
-import Advertising from "../Pages/Advertising/Advertising.jsx";
-import Management from "../Pages/Management/Management.jsx";
 import { setCurrentTab } from "../State/Slices/tabHandlerSlice.js";
+import HostelManagement from "../Pages/HostelManagement/HostelManagement.jsx";
+import Advertisement from "../Pages/Advertisement/Advertisement.jsx";
+import EditProfile from "../Pages/EditProfile/EditProfile.jsx";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -17,22 +17,24 @@ const Layout = () => {
 
   useEffect(() => {
     if (!currentTab && role === "owner") {
-      dispatch(setCurrentTab("Registration"));
+      dispatch(setCurrentTab("Manage Hostels"));
     }
 
     switch (currentTab) {
-      case "Registration":
-        navigate("/registration");
+      case "Manage Hostels":
+        navigate("/management");
+        break;
+      case "Advertise Hostels":
+        navigate("/advertising");
+        break;
+      case "Bookings":
+        navigate("/bookings");
         break;
       case "Chat":
         navigate("/chat");
         break;
-      case "Advertising":
-        navigate("/advertising");
-        break;
-      case "Management":
-        navigate("/management");
-        break;
+      case "Edit Profile":
+        navigate("/edit-profile");
       default:
         break;
     }
@@ -40,14 +42,16 @@ const Layout = () => {
 
   const renderContent = () => {
     switch (currentTab) {
-      case "Registration":
-        return <Registration />;
+      case "Manage Hostels":
+        return <HostelManagement />;
       case "Chat":
         return <Chat />;
-      case "Advertising":
-        return <Advertising />;
-      case "Management":
-        return <Management />;
+      case "Advertise Hostels":
+        return <Advertisement />;
+      case "Bookings":
+        return <div>Bookings</div>;
+      case "Edit Profile":
+        return <EditProfile />;
       default:
         return null;
     }

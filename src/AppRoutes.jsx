@@ -1,15 +1,15 @@
 import React from "react";
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link, Navigate } from "react-router-dom";
 import Layout from "./Layout/Layout.jsx";
 import Login from "./Pages/Login/Login.jsx";
 import Signup from "./Pages/Signup/Signup.jsx";
 import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword.jsx";
 import EnterCode from "./Pages/ForgotPassword/EnterCode.jsx";
 import ResetPassword from "./Pages/ForgotPassword/ResetPassword.jsx";
-import Registration from "./Pages/Registration/Registration.jsx";
+import EditProfile from "./Pages/EditProfile/EditProfile.jsx";
+import Advertisement from "./Pages/Advertisement/Advertisement.jsx";
+import HostelManagement from "./Pages/HostelManagement/HostelManagement.jsx";
 import Chat from "./Pages/Chat/Chats.jsx";
-import Advertising from "./Pages/Chat/Chats.jsx";
-import Management from "./Pages/Management/Management.jsx";
 import LandLayout from "./Layout/LandLayout.jsx";
 import LandingPage from "./Pages/Landing Page/index.jsx";
 import Hostels from "./Pages/Landing Page/Hostels.jsx";
@@ -24,7 +24,7 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* Common routes not accessible to logged in Owner */}
+      {/* Public-facing routes (not for owners) */}
       {role !== "owner" && (
         <Route element={<LandLayout />}>
           <Route path="/" element={<LandingPage />} />
@@ -40,37 +40,60 @@ const AppRoutes = () => {
           <Route path="/hostel-details" element={<HostelDetails />} />
           <Route path="/room-details" element={<RoomDetails />} />
           <Route path="/reserve" element={<Reserve />} />
-          <Route path="/chat" element={<Chat />} />
         </Route>
       )}
 
-      {/* Auth routes Accesible to all*/}
+      {/* Auth routes - only when not logged in */}
       {(!user || Object.keys(user).length === 0) && (
         <>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </>
       )}
+
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/enter-code" element={<EnterCode />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
-      {/* Owner Routes */}
+      {/* Owner-specific routes */}
       {role === "owner" && (
-        <React.Fragment>
-          <Route
-            path="/registration"
-            element={
-              <Layout>
-                <Registration />
-              </Layout>
-            }
-          />
+        <>
           <Route
             path="/management"
             element={
               <Layout>
-                <Management />
+                <HostelManagement />
+              </Layout>
+            }
+          />
+          <Route path="/" element={<Navigate to={"/management"} replace />} />
+          <Route
+            path="/bookings"
+            element={
+              <Layout>
+                <div>Bookings</div>
+              </Layout>
+            }
+          />
+          <Route
+            path="/advertising"
+            element={
+              <Layout>
+                <Advertisement />
+              </Layout>
+            }
+          />
+        </>
+      )}
+
+      {/* Only for logged-in users */}
+      {user && Object.keys(user).length > 0 && (
+        <>
+          <Route
+            path="/edit-profile"
+            element={
+              <Layout>
+                <EditProfile />
               </Layout>
             }
           />
@@ -82,19 +105,10 @@ const AppRoutes = () => {
               </Layout>
             }
           />
-          <Route
-            path="/advertising"
-            element={
-              <Layout>
-                <Advertising />
-              </Layout>
-            }
-          />
-        </React.Fragment>
+        </>
       )}
 
-      {/* Catch-all route for 404 error page */}
-      {/* <Route path="*" element={<ErrorPage />} /> */}
+      {/* Catch-all route (404) */}
       <Route
         path="*"
         element={

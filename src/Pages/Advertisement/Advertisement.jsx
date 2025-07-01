@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { BedOutlined, Bathtub, Person } from "@mui/icons-material";
-import { BackgroundColor, PrimaryColor } from "../../Theme/ColorBoilerplate";
-import Button from "../../Components/Button";
+import { BackgroundColor, PrimaryColor } from "../../Theme/ColorBoilerplate.js";
+import Button from "../../Components/Button.jsx";
 import Dropdown from "../../Components/Dropdown.jsx";
-import Typography from "../../Theme/Typography";
+import Typography from "../../Theme/Typography.jsx";
 import BedImage from "../../Assets/Images/Beds.svg";
 import { Modal, Box } from "@mui/material";
 import InputField from "../../Components/InputField.jsx";
 import AdCreator from "../../Components/AddCreator.jsx";
 import TextAreaComponent from "../../Components/TextArea.jsx";
+import { useSelector, useDispatch } from "react-redux";
 
-export default function Advertising({ role }) {
+export default function Advertisement() {
+  const role = useSelector((state) => state.user.role);
+  const dispatch = useDispatch();
   const [listings, setListings] = useState([
     {
       id: 1,
@@ -117,6 +120,7 @@ export default function Advertising({ role }) {
     { value: 2, label: "last week" },
     { value: 3, label: "last month" },
   ];
+
   const handleAdCreatorUpload = (newListing) => {
     setListings((prevListings) => [
       ...prevListings,
@@ -140,7 +144,7 @@ export default function Advertising({ role }) {
           <div className="bg-white shadow rounded-lg p-3 mb-4">
             <div className="flex sm:flex-wrap justify-between items-center">
               <Typography variant={"h3"} className="font-bold">
-                Listings
+                Hostel
               </Typography>
               <div className="flex items-center gap-2">
                 <Dropdown
@@ -151,7 +155,7 @@ export default function Advertising({ role }) {
                 />
                 {role === "owner" && (
                   <Button
-                    text="Add New to Listings"
+                    text="Add New  Hostel"
                     type="submit"
                     height="40px"
                     width="100%"
@@ -357,7 +361,7 @@ export default function Advertising({ role }) {
         <AdCreator
           onClose={() => setShowAdCreator(false)}
           onUpload={handleAdCreatorUpload}
-        /> // Pass the onClose prop to handle back action
+        />
       )}
     </div>
   );

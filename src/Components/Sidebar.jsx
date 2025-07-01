@@ -16,7 +16,7 @@ const Sidebar = () => {
 
   const tabs =
     role === "owner"
-      ? ["Registration", "Management", "Chat", "Advertising"]
+      ? ["Manage Hostels", "Advertise Hostels", "Bookings", "Chat"]
       : [];
 
   const handleTabClick = (tab) => {

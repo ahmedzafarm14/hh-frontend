@@ -15,12 +15,11 @@ import Profile from "./Profile";
 export default function Navbar() {
   const dispatch = useDispatch();
   const currentTab = useSelector((state) => state.tabHandler.currentTab);
-  const isSidebarOpen = useSelector((state) => state.tabHandler.toggleSidebar);
   const role = useSelector((state) => state.user.role);
 
   const tabs =
     role === "owner"
-      ? ["Registration", "Management", "Chat", "Advertising"]
+      ? ["Manage Hostels", "Advertise Hostels", "Bookings", "Chat"]
       : [];
 
   const handleTabClick = (tab) => {
@@ -31,14 +30,14 @@ export default function Navbar() {
 
   const getTabIcon = (tab) => {
     switch (tab) {
-      case "Registration":
+      case "Manage Hostels":
         return <DashboardIcon fontSize="small" className="mr-1" />;
+      case "Advertise Hostels":
+        return <AdUnitsOutlinedIcon fontSize="small" className="mr-1" />;
+      case "Bookings":
+        return <AccountBalanceOutlinedIcon fontSize="small" className="mr-1" />;
       case "Chat":
         return <ChatBubbleOutlineIcon fontSize="small" className="mr-1" />;
-      case "Advertising":
-        return <AdUnitsOutlinedIcon fontSize="small" className="mr-1" />;
-      case "Management":
-        return <AccountBalanceOutlinedIcon fontSize="small" className="mr-1" />;
       default:
         return null;
     }

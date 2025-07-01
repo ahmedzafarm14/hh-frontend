@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Card from "../../Components/Card";
+import Card from "../../Components/Card.jsx";
 import InputField from "../../Components/InputField.jsx";
 import { useNavigate } from "react-router-dom";
 import Typography from "../../Theme/Typography.jsx";
@@ -8,7 +8,7 @@ import FileUploader from "../../Components/FileUploader.jsx";
 import { PrimaryColor, BackgroundColor } from "../../Theme/ColorBoilerplate.js";
 import Button from "../../Components/Button.jsx";
 
-const Registration = ({ role }) => {
+const EditProfile = ({ role }) => {
   const [form, setForm] = useState({
     usernameOrEmail: "",
     password: "",
@@ -372,4 +372,4 @@ const Registration = ({ role }) => {
   );
 };
 
-export default Registration;
+export default EditProfile;

@@ -10,6 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { useSelector, useDispatch } from "react-redux";
+import { setCurrentTab } from "../State/Slices/tabHandlerSlice.js";
 
 export default function AccountMenu() {
   const { firstName, lastName } = useSelector((state) => state.user.user);
@@ -22,6 +23,15 @@ export default function AccountMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleSettings = () => {
+    dispatch(setCurrentTab("Edit Profile"));
+    handleClose();
+  };
+  const handleProfile = () => {
+    dispatch(setCurrentTab("Edit Profile"));
+    handleClose();
+  };
+
   const handleLogout = () => {};
   return (
     <React.Fragment>
@@ -76,7 +86,7 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleProfile}>
           <Avatar />
           <Box sx={{ ml: 1 }}>
             <strong>
@@ -85,7 +95,7 @@ export default function AccountMenu() {
           </Box>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleSettings}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>

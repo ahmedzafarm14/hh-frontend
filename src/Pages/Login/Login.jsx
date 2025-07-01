@@ -58,7 +58,7 @@ export default function LoginPage() {
         if (data.role === "resident") {
           navigate("/hostels");
         } else if (data.role === "owner") {
-          navigate("/registration");
+          navigate("/management");
         }
       }
     } catch (err) {
