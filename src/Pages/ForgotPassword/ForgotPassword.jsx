@@ -11,7 +11,7 @@ import {
   setSuccessMessage,
   clearMessages,
 } from "../../State/Slices/messageHandlerSlice.js";
-import { useRequestPasswordResetMutation } from "../../State/Services/userApi.js";
+import { useRequestPasswordResetMutation } from "../../State/Services/userQueries.js";
 import Loader from "../../Components/Loader.jsx";
 import SuccessMessage from "../../Components/SuccessMessage.jsx";
 import ErrorMessage from "../../Components/ErrorMessage.jsx";
@@ -112,6 +112,7 @@ export default function LoginPage() {
               <InputField
                 height="40px"
                 width="100%"
+                isRequired={true}
                 placeholder="Enter Recovery Email"
                 type="text"
                 name="email"

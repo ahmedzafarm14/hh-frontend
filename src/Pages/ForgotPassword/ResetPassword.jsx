@@ -7,7 +7,7 @@ import { PrimaryColor, BackgroundColor } from "../../Theme/ColorBoilerplate.js";
 import Image from "../../Assets/Images/reserve.svg";
 import ErrorMessage from "../../Components/ErrorMessage.jsx";
 import SuccessMessage from "../../Components/SuccessMessage.jsx";
-import { useResetPasswordConfirmMutation } from "../../State/Services/userApi.js";
+import { useResetPasswordConfirmMutation } from "../../State/Services/userQueries.js";
 import Loader from "../../Components/Loader.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -118,6 +118,7 @@ export default function LoginPage() {
               <InputField
                 height="40px"
                 width="100%"
+                isRequired={true}
                 placeholder="Create New Password"
                 type="password"
                 onChange={handleChange}
@@ -129,6 +130,7 @@ export default function LoginPage() {
               </Typography>
               <InputField
                 height="40px"
+                isRequired={true}
                 width="100%"
                 placeholder="Confirm New Password"
                 type="password"

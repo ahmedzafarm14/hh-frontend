@@ -9,6 +9,7 @@ const Button = ({
   customColor,
   bgColor,
   startIcon,
+  type,
   className = "",
 }) => {
   const isGoogleLogin = text === "Google";
@@ -31,6 +32,7 @@ const Button = ({
           justifyContent: isGoogleLogin ? "center" : "",
           gap: isGoogleLogin ? "10px" : "",
         }}
+        type={type}
         onClick={handleClick}
         className={`${className}`}
       >

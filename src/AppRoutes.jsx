@@ -44,13 +44,32 @@ const AppRoutes = () => {
       )}
 
       {/* Auth routes - only when not logged in */}
-      {(!user || Object.keys(user).length === 0) && (
-        <>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </>
-      )}
+      <Route
+        path="/login"
+        element={
+          role === "owner" ? (
+            <Navigate to="/management" replace />
+          ) : role === "resident" ? (
+            <Navigate to="/other" replace />
+          ) : (
+            <Login />
+          )
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          role === "owner" ? (
+            <Navigate to="/management" replace />
+          ) : role === "resident" ? (
+            <Navigate to="/other" replace />
+          ) : (
+            <Signup />
+          )
+        }
+      />
 
+      {/* Password reset routes */}
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/enter-code" element={<EnterCode />} />
       <Route path="/reset-password" element={<ResetPassword />} />

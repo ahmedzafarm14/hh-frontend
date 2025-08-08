@@ -7,7 +7,7 @@ import { PrimaryColor, BackgroundColor } from "../../Theme/ColorBoilerplate.js";
 import Image from "../../Assets/Images/reserve.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCurrentTab } from "../../State/Slices/tabHandlerSlice.js";
-import { useLoginMutation } from "../../State/Services/userApi.js";
+import { useLoginMutation } from "../../State/Services/userQueries.js";
 import Loader from "../../Components/Loader.jsx";
 import SuccessMessage from "../../Components/SuccessMessage.jsx";
 import ErrorMessage from "../../Components/ErrorMessage.jsx";
@@ -52,9 +52,9 @@ export default function LoginPage() {
           user: response.result.personData,
           role: response.result.personData.role,
         };
-        dispatch(setUser(data));
         dispatch(setSuccessMessage(response.message || "Login successful!"));
         dispatch(clearMessages());
+        dispatch(setUser(data));
         if (data.role === "resident") {
           navigate("/hostels");
         } else if (data.role === "owner") {
@@ -142,6 +142,7 @@ export default function LoginPage() {
             <div className="text-TextColor flex flex-col gap-1">
               <InputField
                 height="40px"
+                isRequired={true}
                 width="100%"
                 placeholder="Email or username"
                 type="text"
@@ -153,6 +154,7 @@ export default function LoginPage() {
               <InputField
                 height="40px"
                 width="100%"
+                isRequired={true}
                 placeholder="Password"
                 type="password"
                 onChange={handleChange}

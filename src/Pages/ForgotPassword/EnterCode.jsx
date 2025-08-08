@@ -15,7 +15,7 @@ import {
 import {
   useVerifyOTPMutation,
   useResendOTPMutation,
-} from "../../State/Services/userApi.js"; // Added resend OTP mutation
+} from "../../State/Services/userQueries.js"; // Added resend OTP mutation
 import Loader from "../../Components/Loader.jsx";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -194,6 +194,7 @@ export default function LoginPage() {
               <InputField
                 height="40px"
                 width="100%"
+                isRequired={true}
                 placeholder="000000"
                 type="text"
                 onChange={handleChange}
