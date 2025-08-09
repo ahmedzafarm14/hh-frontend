@@ -16,7 +16,7 @@ import {
   setErrorMessage,
   setSuccessMessage,
 } from "../../State/Slices/messageHandlerSlice.js";
-import { setUser } from "../../State/Slices/userSlice.js";
+import { updateUserData } from "../../State/Slices/userSlice.js";
 import { useUpdateProfileMutation } from "../../State/Services/userQueries.js";
 
 const EditProfile = () => {
@@ -27,24 +27,29 @@ const EditProfile = () => {
   );
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 
+  // Initialize form state with fallback values
   const [form, setForm] = useState({
-    userName: "",
-    firstName: "",
-    lastName: "",
-    cnic: "",
-    phoneNumber: "",
-  });
-  const [profileImage, setProfileImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
-  const [gender, setGender] = useState("");
-  const [location, setLocation] = useState({
-    city: "",
-    district: "",
-    postalCode: "",
-    addressDetails: "",
-    location: { type: "Point", coordinates: [0, 0] },
+    userName: user?.userName || "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    cnic: user?.cnic || "",
+    phoneNumber: user?.contact || "", // Correct reference to user.contact
   });
 
+  const [profileImage, setProfileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); // Image preview for selected file
+  const [gender, setGender] = useState(user?.gender || "");
+
+  // Initialize location state with user data
+  const [location, setLocation] = useState({
+    city: user?.address?.city || "",
+    district: user?.address?.district || "",
+    postalCode: user?.address?.postalCode || "",
+    addressDetails: user?.address?.addressDetails || "",
+    location: user?.address?.location || { type: "Point", coordinates: [0, 0] },
+  });
+
+  // Ensure data is updated on user object change
   useEffect(() => {
     if (user) {
       setForm({
@@ -52,21 +57,21 @@ const EditProfile = () => {
         firstName: user.firstName || "",
         lastName: user.lastName || "",
         cnic: user.cnic || "",
-        phoneNumber: user.phoneNumber || "",
+        phoneNumber: user.contact || "", // Update contact with correct value
       });
       setGender(user.gender || "");
       setLocation({
-        city: user.location?.city || "",
-        district: user.location?.district || "",
-        postalCode: user.location?.postalCode || "",
-        addressDetails: user.location?.addressDetails || "",
-        location: user.location?.location || {
+        city: user.address?.city || "",
+        district: user.address?.district || "",
+        postalCode: user.address?.postalCode || "",
+        addressDetails: user.address?.addressDetails || "",
+        location: user.address?.location || {
           type: "Point",
           coordinates: [0, 0],
         },
       });
-      setProfileImage(null); // reset on load
-      setImagePreview(user.profileImage || "");
+      setProfileImage(null); // Reset image on load
+      setImagePreview(null); // Reset preview
     }
   }, [user]);
 
@@ -82,7 +87,7 @@ const EditProfile = () => {
     const file = e.target.files[0];
     if (file) {
       setProfileImage(file);
-      setImagePreview(URL.createObjectURL(file));
+      setImagePreview(URL.createObjectURL(file)); // Preview image immediately after selection
     }
   };
 
@@ -106,24 +111,61 @@ const EditProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(clearMessages());
-
     const formData = new FormData();
-    formData.append("userName", form.userName);
-    formData.append("firstName", form.firstName);
-    formData.append("lastName", form.lastName);
-    formData.append("cnic", form.cnic);
-    formData.append("gender", gender);
-    formData.append("phoneNumber", form.phoneNumber);
-    formData.append("email", user.email);
-    formData.append("location", JSON.stringify(location));
 
+    // Only append changed fields to the formData
+    if (form.userName !== user.userName) {
+      formData.append("userName", form.userName);
+    }
+
+    if (form.firstName !== user.firstName) {
+      formData.append("firstName", form.firstName);
+    }
+
+    if (form.lastName !== user.lastName) {
+      formData.append("lastName", form.lastName);
+    }
+
+    if (form.cnic !== user.cnic) {
+      formData.append("cnic", form.cnic);
+    }
+
+    if (gender !== user.gender) {
+      formData.append("gender", gender);
+    }
+
+    if (form.phoneNumber !== user.contact) {
+      // Correct reference to user.contact
+      formData.append("contact", form.phoneNumber);
+    }
+
+    // Only update location if there is a change
+    if (
+      location.city !== user.address?.city ||
+      location.district !== user.address?.district ||
+      location.postalCode !== user.address?.postalCode ||
+      location.addressDetails !== user.address?.addressDetails ||
+      location.location?.coordinates[0] !==
+        user.address?.location?.coordinates[0] ||
+      location.location?.coordinates[1] !==
+        user.address?.location?.coordinates[1]
+    ) {
+      formData.append("address", JSON.stringify(location)); // Update location properly
+    }
+
+    // Only append the profile image if it has been changed
     if (profileImage instanceof File) {
       formData.append("profileImage", profileImage);
     }
+
     try {
       const response = await updateProfile(formData).unwrap();
-      // dispatch(setUser(response));
+      console.log("Profile updated successfully:", response);
+      dispatch(updateUserData(response.user));
       dispatch(setSuccessMessage("Profile updated successfully"));
+      setTimeout(() => {
+        dispatch(clearMessages());
+      }, 2000);
     } catch (err) {
       dispatch(
         setErrorMessage(
@@ -152,17 +194,18 @@ const EditProfile = () => {
           {/* Profile Image */}
           <div className="flex justify-start mb-4">
             <label htmlFor="profileImage" className="cursor-pointer">
-              {imagePreview ? (
+              {/* Check if there's a preview or fallback to image in redux state */}
+              {imagePreview || user?.image?.url ? (
                 <img
-                  src={imagePreview}
+                  src={imagePreview || user?.image?.url} // Show preview or redux state image
                   alt="Profile Preview"
                   className="w-32 h-32 rounded-full object-cover"
                 />
               ) : (
                 <Avatar
                   sx={{ width: 100, height: 100 }}
-                  alt="User Avatar"
-                  src=""
+                  alt="Default Avatar"
+                  src="" // Show default avatar if no image is set
                 />
               )}
             </label>
@@ -290,7 +333,7 @@ const EditProfile = () => {
               <InputField
                 height="40px"
                 width="100%"
-                value={user.email}
+                value={user?.email || ""}
                 disabled
                 type="email"
               />

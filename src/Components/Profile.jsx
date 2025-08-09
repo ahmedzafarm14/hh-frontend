@@ -13,26 +13,35 @@ import { useSelector, useDispatch } from "react-redux";
 import { setCurrentTab } from "../State/Slices/tabHandlerSlice.js";
 
 export default function AccountMenu() {
-  const { firstName, lastName } = useSelector((state) => state.user.user);
+  const { firstName, lastName, image } = useSelector(
+    (state) => state.user.user
+  );
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const handleSettings = () => {
     dispatch(setCurrentTab("Edit Profile"));
     handleClose();
   };
+
   const handleProfile = () => {
     dispatch(setCurrentTab("Edit Profile"));
     handleClose();
   };
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    // Add your logout functionality here
+  };
+
   return (
     <React.Fragment>
       <Box>
@@ -44,13 +53,35 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar
-              sx={{ width: 32, height: 32 }}
-              className="!bg-BackgroundColor !text-PrimaryColor"
-            />
+            {/* Display user image or fallback to Avatar */}
+            {image ? (
+              <img
+                src={image.url}
+                alt={`${firstName} ${lastName}`}
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  bgcolor: "BackgroundColor", // Replace with your color
+                  color: "PrimaryColor", // Replace with your color
+                }}
+              >
+                {firstName?.[0]}
+                {lastName?.[0]} {/* Show initials */}
+              </Avatar>
+            )}
           </IconButton>
         </Tooltip>
       </Box>
+
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
@@ -87,7 +118,21 @@ export default function AccountMenu() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={handleProfile}>
-          <Avatar />
+          {/* Display user image or fallback to Avatar */}
+          {image ? (
+            <img
+              src={image.url}
+              alt={`${firstName} ${lastName}`}
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            <Avatar />
+          )}
           <Box sx={{ ml: 1 }}>
             <strong>
               {firstName} {lastName}
