@@ -11,20 +11,31 @@ import {
   setCurrentTab,
 } from "../State/Slices/tabHandlerSlice.js";
 import Profile from "./Profile";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const dispatch = useDispatch();
   const currentTab = useSelector((state) => state.tabHandler.currentTab);
   const role = useSelector((state) => state.user.role);
+  const navigate = useNavigate();
 
   const tabs =
     role === "owner"
       ? ["Manage Hostels", "Advertise Hostels", "Bookings", "Chat"]
-      : [];
+      : ["Home", "Hostels", "Contact us"];
 
   const handleTabClick = (tab) => {
     if (role === "owner" && tabs.includes(tab)) {
       dispatch(setCurrentTab(tab));
+    } else {
+      dispatch(setCurrentTab(tab));
+      if (tab == "Home") {
+        navigate("/");
+      } else if (tab == "Hostels") {
+        navigate("/hostels");
+      } else if (tab == "Contact us") {
+        navigate("/contact");
+      }
     }
   };
 

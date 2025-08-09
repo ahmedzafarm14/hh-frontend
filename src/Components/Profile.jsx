@@ -11,14 +11,17 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentTab } from "../State/Slices/tabHandlerSlice.js";
+import { useNavigate } from "react-router-dom";
 
 export default function AccountMenu() {
   const { firstName, lastName, image } = useSelector(
     (state) => state.user.user
   );
+  const role = useSelector((state) => state.user.role);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,11 +33,17 @@ export default function AccountMenu() {
 
   const handleSettings = () => {
     dispatch(setCurrentTab("Edit Profile"));
+    if (role === "resident") {
+      navigate("/edit-profile");
+    }
     handleClose();
   };
 
   const handleProfile = () => {
     dispatch(setCurrentTab("Edit Profile"));
+    if (role === "resident") {
+      navigate("/edit-profile");
+    }
     handleClose();
   };
 

@@ -50,7 +50,7 @@ const AppRoutes = () => {
           role === "owner" ? (
             <Navigate to="/management" replace />
           ) : role === "resident" ? (
-            <Navigate to="/other" replace />
+            <Navigate to="/hostels" replace />
           ) : (
             <Login />
           )
@@ -62,7 +62,7 @@ const AppRoutes = () => {
           role === "owner" ? (
             <Navigate to="/management" replace />
           ) : role === "resident" ? (
-            <Navigate to="/other" replace />
+            <Navigate to="/hostels" replace />
           ) : (
             <Signup />
           )

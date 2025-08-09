@@ -52,12 +52,17 @@ export default function LoginPage() {
           user: response.result.personData,
           role: response.result.personData.role,
         };
+        const role = (response.result.personData.role || "")
+          .toLowerCase()
+          .trim();
         dispatch(setSuccessMessage(response.message || "Login successful!"));
-        dispatch(clearMessages());
+        setTimeout(() => {
+          dispatch(clearMessages());
+        }, 2000);
         dispatch(setUser(data));
-        if (data.role === "resident") {
+        if (role === "resident") {
           navigate("/hostels");
-        } else if (data.role === "owner") {
+        } else if (role === "owner") {
           navigate("/management");
         }
       }
