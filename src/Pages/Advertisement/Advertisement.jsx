@@ -261,6 +261,7 @@ export default function Advertisement() {
                     <Typography variant={"body1"}>Title</Typography>
                     <InputField
                       height="40px"
+                      isRequired={true}
                       width="100%"
                       placeholder="Title"
                       type="text"
@@ -284,6 +285,7 @@ export default function Advertisement() {
                       <Typography variant={"body1"}>Beds</Typography>
                       <InputField
                         height="40px"
+                        isRequired={true}
                         width="100%"
                         placeholder="Beds"
                         type="number"
@@ -296,6 +298,7 @@ export default function Advertisement() {
                       <Typography variant={"body1"}>Bath</Typography>
                       <InputField
                         height="40px"
+                        isRequired={true}
                         width="100%"
                         placeholder="Bath"
                         type="number"
@@ -308,6 +311,7 @@ export default function Advertisement() {
                       <Typography variant={"body1"}>Person</Typography>
                       <InputField
                         height="40px"
+                        isRequired={true}
                         width="100%"
                         placeholder="Person"
                         type="number"
@@ -321,6 +325,7 @@ export default function Advertisement() {
                     <Typography variant={"body1"}>Price (Rs.)</Typography>
                     <InputField
                       height="40px"
+                      isRequired={true}
                       width="100%"
                       placeholder="Price (Rs.)"
                       type="number"

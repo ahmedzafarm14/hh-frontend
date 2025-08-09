@@ -15,6 +15,7 @@ const InputField = ({
   isOTP = false, // Prop to determine if this is an OTP input
   length = 6, // Number of OTP input fields
   autoComplete,
+  isRequired = false, // Default value set to false
 }) => {
   const [inputType, setInputType] = useState(type);
   const [otpValues, setOtpValues] = useState(Array(length).fill(""));
@@ -52,7 +53,7 @@ const InputField = ({
             .fill(0)
             .map((_, index) => (
               <input
-                required
+                required={isRequired} // Set required based on isRequired prop
                 key={index}
                 type="text"
                 maxLength="1"
@@ -67,7 +68,7 @@ const InputField = ({
       ) : (
         <>
           <input
-            required
+            required={isRequired} // Conditionally set required attribute
             style={{ height, width }}
             className={`border border-LightBackground text-sm placeholder-AccentColor3 rounded-md w-full focus:outline-none p-2 ${
               type === "number" ? "number-input" : ""

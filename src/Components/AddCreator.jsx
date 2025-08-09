@@ -104,6 +104,7 @@ export default function AdCreator({ onClose, onUpload }) {
               height="40px"
               width="100%"
               placeholder="Enter Your Ad Title"
+              isRequired={true}
               type="text"
               onChange={handleInputChange}
               name="title"
@@ -135,6 +136,7 @@ export default function AdCreator({ onClose, onUpload }) {
             <InputField
               height="40px"
               width="100%"
+              isRequired={true}
               placeholder="Enter Your Price"
               type="text"
               onChange={handleInputChange}
@@ -157,6 +159,7 @@ export default function AdCreator({ onClose, onUpload }) {
             <InputField
               height="40px"
               width="100%"
+              isRequired={true}
               placeholder="Enter Location"
               type="text"
               onChange={handleInputChange}

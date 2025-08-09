@@ -149,6 +149,7 @@ export default function Chats() {
       >
         <div className="p-2 mt-1">
           <InputField
+            isRequired={true}
             height="40px"
             width="100%"
             placeholder="Search"

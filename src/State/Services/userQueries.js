@@ -55,6 +55,15 @@ export const userApi = emptySplitApi.injectEndpoints({
         body: { email },
       }),
     }),
+
+    updateProfile: builder.mutation({
+      query: (formData) => ({
+        method: "PUT",
+        url: "/api/user/update-profile/",
+        body: formData,
+      }),
+      invalidatesTags: ["UserProfile"],
+    }),
   }),
 });
 
@@ -65,4 +74,5 @@ export const {
   useRequestPasswordResetMutation,
   useResetPasswordConfirmMutation,
   useResendOTPMutation,
+  useUpdateProfileMutation,
 } = userApi;

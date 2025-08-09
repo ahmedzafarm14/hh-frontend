@@ -10,7 +10,7 @@ import {
   LightBackground,
 } from "../../Theme/ColorBoilerplate.js";
 import Image from "../../Assets/Images/reserve.svg";
-import { useSignUpMutation } from "../../State/Services/userApi.js";
+import { useSignUpMutation } from "../../State/Services/userQueries.js";
 import Loader from "../../Components/Loader.jsx";
 import ErrorMessage from "../../Components/ErrorMessage.jsx";
 import SuccessMessage from "../../Components/SuccessMessage.jsx";
@@ -170,6 +170,7 @@ export default function SignupPage() {
               <InputField
                 height="40px"
                 width="100%"
+                isRequired={true}
                 placeholder="First Name"
                 type="text"
                 onChange={handleChange}
@@ -179,6 +180,7 @@ export default function SignupPage() {
               />
               <InputField
                 height="40px"
+                isRequired={true}
                 width="100%"
                 placeholder="Last Name"
                 type="text"
@@ -190,6 +192,7 @@ export default function SignupPage() {
             </div>
             <div className="text-TextColor flex flex-col gap-1">
               <InputField
+                isRequired={true}
                 height="40px"
                 width="100%"
                 placeholder="Email"
@@ -225,6 +228,7 @@ export default function SignupPage() {
 
               <InputField
                 height="40px"
+                isRequired={true}
                 width="100%"
                 placeholder="Password"
                 type="password"

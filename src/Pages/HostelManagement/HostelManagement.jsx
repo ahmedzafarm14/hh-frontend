@@ -260,6 +260,7 @@ export default function HostelManagement() {
                     <Typography variant={"body1"}>Title</Typography>
                     <InputField
                       height="40px"
+                      isRequired={true}
                       width="100%"
                       placeholder="Title"
                       type="text"
@@ -283,6 +284,7 @@ export default function HostelManagement() {
                       <Typography variant={"body1"}>Beds</Typography>
                       <InputField
                         height="40px"
+                        isRequired={true}
                         width="100%"
                         placeholder="Beds"
                         type="number"
@@ -295,6 +297,7 @@ export default function HostelManagement() {
                       <Typography variant={"body1"}>Bath</Typography>
                       <InputField
                         height="40px"
+                        isRequired={true}
                         width="100%"
                         placeholder="Bath"
                         type="number"
@@ -306,6 +309,7 @@ export default function HostelManagement() {
                     <div className="flex flex-col">
                       <Typography variant={"body1"}>Person</Typography>
                       <InputField
+                        isRequired={true}
                         height="40px"
                         width="100%"
                         placeholder="Person"
@@ -321,6 +325,7 @@ export default function HostelManagement() {
                     <InputField
                       height="40px"
                       width="100%"
+                      isRequired={true}
                       placeholder="Price (Rs.)"
                       type="number"
                       name="price"
