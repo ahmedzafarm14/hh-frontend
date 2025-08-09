@@ -61,7 +61,7 @@ export default function LoginPage() {
         }, 2000);
         dispatch(setUser(data));
         if (role === "resident") {
-          navigate("/hostels");
+          navigate("/");
         } else if (role === "owner") {
           navigate("/management");
         }

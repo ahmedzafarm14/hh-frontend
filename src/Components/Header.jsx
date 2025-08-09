@@ -4,17 +4,19 @@ import { Link, useLocation } from "react-router-dom";
 import { BackgroundColor, PrimaryColor } from "../Theme/ColorBoilerplate";
 import Button from "../Components/Button";
 import Profile from "./Profile.jsx";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setCurrentTab } from "../State/Slices/tabHandlerSlice.js";
 
 const StickyHeader = () => {
   const location = useLocation();
   const [isSticky, setIsSticky] = useState(false);
   const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
 
   const tabs = [
     { label: "Home", route: "/" },
     { label: "Hostels", route: "/hostels" },
-    user
+    user && user.role === "resident"
       ? { label: "Chat", route: "/chat" }
       : { label: "Contact Us", route: "/contact" },
   ];
@@ -64,7 +66,17 @@ const StickyHeader = () => {
                 <nav>
                   <ul className="flex space-x-1">
                     {tabs.map((tab) => (
-                      <li key={tab.label}>
+                      <li
+                        key={tab.label}
+                        onClick={() => {
+                          if (
+                            tab.route === "/chat" &&
+                            user.role == "resident"
+                          ) {
+                            dispatch(setCurrentTab(tab.label));
+                          }
+                        }}
+                      >
                         <Link
                           to={tab.route}
                           className={`px-4 py-2 rounded-md transition-colors text-sm ${
