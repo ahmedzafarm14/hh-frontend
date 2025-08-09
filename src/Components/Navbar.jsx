@@ -22,7 +22,7 @@ export default function Navbar() {
   const tabs =
     role === "owner"
       ? ["Manage Hostels", "Advertise Hostels", "Bookings", "Chat"]
-      : ["Home", "Hostels", "Contact us"];
+      : ["Home", "Hostels", "Chat"];
 
   const handleTabClick = (tab) => {
     if (role === "owner" && tabs.includes(tab)) {
@@ -34,7 +34,7 @@ export default function Navbar() {
       } else if (tab == "Hostels") {
         navigate("/hostels");
       } else if (tab == "Contact us") {
-        navigate("/contact");
+        navigate("/chat");
       }
     }
   };

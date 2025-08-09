@@ -14,7 +14,9 @@ const StickyHeader = () => {
   const tabs = [
     { label: "Home", route: "/" },
     { label: "Hostels", route: "/hostels" },
-    { label: "Contact Us", route: "/contact" },
+    user
+      ? { label: "Chat", route: "/chat" }
+      : { label: "Contact Us", route: "/contact" },
   ];
 
   useEffect(() => {
