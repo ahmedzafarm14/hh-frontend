@@ -1,5 +1,6 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { emptySplitApi } from "../Services/emptySplitApi.js";
+import { chatApiBase } from "../Services/chatApiBase.js";
 import sessionStorage from "redux-persist/lib/storage/session";
 import { persistReducer, persistStore } from "redux-persist";
 import userReducer from "../Slices/userSlice.js";
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   tabHandler: tabHandlerReducer,
   hostel: hostelReducer, // added hostel reducer
   [emptySplitApi.reducerPath]: emptySplitApi.reducer,
+  [chatApiBase.reducerPath]: chatApiBase.reducer,
 });
 
 // Wrap rootReducer with persistReducer
@@ -30,7 +32,7 @@ const Store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false, // disable serializableCheck for redux-persist and RTK Query
-    }).concat(emptySplitApi.middleware),
+    }).concat(emptySplitApi.middleware, chatApiBase.middleware),
 });
 
 const persistor = persistStore(Store);

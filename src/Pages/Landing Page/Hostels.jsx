@@ -13,6 +13,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import StarIcon from "@mui/icons-material/Star";
 import { Search as SearchIcon } from "@mui/icons-material";
 import Typography from "../../Theme/Typography";
@@ -22,6 +23,7 @@ import {
   TextColor,
 } from "../../Theme/ColorBoilerplate";
 import Button from "../../Components/Button";
+import { useCreateOrGetRoomMutation } from "../../State/Services/chatQueries.js";
 import topImage from "../../Assets/Images/topimage.svg";
 import { useGetHostelsForResidentQuery } from "../../State/Services/hostelQueries.js";
 import Loader from "../../Components/Loader.jsx";
@@ -45,6 +47,7 @@ export default function Component() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hostelsFromState = useSelector((state) => state.hostel.hostels); // Fixed: was state.hostelSlice.hostels
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [filteredHostels, setFilteredHostels] = useState([]);
@@ -146,6 +149,28 @@ export default function Component() {
       target: { value },
     } = event;
     setSelectedFilters(typeof value === "string" ? value.split(",") : value);
+  };
+
+
+  const handleStartChat = async (hotel) => {
+    try {
+      if (!user || Object.keys(user).length === 0) {
+        navigate("/login");
+        return;
+      }
+      const participantId = hotel?.ownerId || hotel?.owner?._id || hotel?.ownerId?.toString?.();
+      if (!participantId) {
+        // No owner info available in demo data; block action gracefully
+        return;
+      }
+      const res = await createRoom({ participantId }).unwrap();
+      const roomId = res?.data?._id || res?.room?._id || res?._id;
+      if (roomId) {
+        navigate(`/chat?roomId=${roomId}`);
+      }
+    } catch (err) {
+      console.error("Failed to start chat", err);
+    }
   };
 
   const handleHostelClick = (hostel) => {
@@ -359,6 +384,31 @@ export default function Component() {
                         </Typography>
                       )}
                     </Box>
+
+                    <div className="flex gap-2">
+                      <Button
+                        text="Book Now"
+                        type="submit"
+                        height="37px"
+                        width="100%"
+                        customColor={BackgroundColor}
+                        bgColor={PrimaryColor}
+                        className="rounded-full px-5 h-auto border-none"
+                        onClick={() => navigate("/hostel-details")}
+                      />
+                      <Button
+                        text={creatingRoom ? "Starting..." : "Chat with Owner"}
+                        type="button"
+                        height="37px"
+                        width="100%"
+                        customColor={BackgroundColor}
+                        bgColor={PrimaryColor}
+                        className="rounded-full px-5 h-auto border-none"
+                        onClick={() => handleStartChat(hotel)}
+                        disabled={!hotel?.ownerId || creatingRoom}
+                      />
+                    </div>
+
                     <Button
                       text="Book Now"
                       type="submit"
@@ -372,6 +422,7 @@ export default function Component() {
                         handleHostelClick(hostel);
                       }}
                     />
+
                   </Box>
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (
