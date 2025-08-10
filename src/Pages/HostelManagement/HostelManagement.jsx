@@ -7,53 +7,54 @@ import Typography from "../../Theme/Typography.jsx";
 import BedImage from "../../Assets/Images/Beds.svg";
 import { Modal, Box } from "@mui/material";
 import InputField from "../../Components/InputField.jsx";
-import AdCreator from "../../Components/AddCreator.jsx";
+import HostelCreator from "../../Components/HostelCreator.jsx";
 import TextAreaComponent from "../../Components/TextArea.jsx";
 import { useSelector, useDispatch } from "react-redux";
+import { useGetHostelsForOwnerQuery } from "../../State/Services/hostelQueries.js";
+import { setHostels } from "../../State/Slices/hostelSlice.js";
+import Loader from "../../Components/Loader.jsx";
 
 export default function HostelManagement() {
   const role = useSelector((state) => state.user.role);
   const dispatch = useDispatch();
-  const [listings, setListings] = useState([
-    {
-      id: 1,
-      title: "2 Person Bedroom",
-      description:
-        "Cozy 2-person bedroom hostel offering a comfortable and friendly atmosphere for travelers. Enjoy shared amenities and a communal vibe just steps away from local attractions.",
-      beds: 2,
-      bath: 1,
-      person: 2,
-      price: 12000,
-      image: BedImage,
-    },
-    {
-      id: 2,
-      title: "3 Person Bedroom",
-      description:
-        "Cozy 2-person bedroom hostel offering a comfortable and friendly atmosphere for travelers. Enjoy shared amenities and a communal vibe just steps away from local attractions.",
-      beds: 3,
-      bath: 2,
-      person: 3,
-      price: 16000,
-      image: BedImage,
-    },
-    {
-      id: 3,
-      title: "4 Person Bedroom",
-      description:
-        "Cozy 2-person bedroom hostel offering a comfortable and friendly atmosphere for travelers. Enjoy shared amenities and a communal vibe just steps away from local attractions.",
-      beds: 4,
-      bath: 2,
-      person: 4,
-      price: 20000,
-      image: BedImage,
-    },
-  ]);
+  const hostelsFromState = useSelector((state) => state.hostel.hostels);
 
+  // Fetch hostels from backend
+  const {
+    data: hostelsFromAPI,
+    isLoading,
+    error,
+  } = useGetHostelsForOwnerQuery(undefined, {
+    // Skip the query if we already have hostels in state
+    skip: hostelsFromState.length > 0,
+  });
+
+  const [listings, setListings] = useState([]);
   const [open, setOpen] = useState(false);
   const [editingListing, setEditingListing] = useState(null);
-  const [listing, setListing] = useState("");
-  const [showAdCreator, setShowAdCreator] = useState(false);
+  const [showHostelCreator, setShowHostelCreator] = useState(false);
+
+  // Effect to handle initial data loading and state management
+  useEffect(() => {
+    // If we have hostels in state, use them
+    if (hostelsFromState.length > 0) {
+      setListings(hostelsFromState);
+    }
+    // If we don't have hostels in state but we have data from API, store it
+    else if (hostelsFromAPI && hostelsFromAPI.length > 0) {
+      dispatch(setHostels(hostelsFromAPI));
+      setListings(hostelsFromAPI);
+    }
+  }, [hostelsFromState, hostelsFromAPI, dispatch]);
+
+  // Effect to handle API data when it comes in
+  useEffect(() => {
+    if (hostelsFromAPI && hostelsFromAPI.length > 0) {
+      dispatch(setHostels(hostelsFromAPI));
+      setListings(hostelsFromAPI);
+    }
+  }, [hostelsFromAPI, dispatch]);
+
   useEffect(() => {
     // Create a ResizeObserver instance with an empty callback
     const resizeObserver = new ResizeObserver(() => {});
@@ -105,60 +106,69 @@ export default function HostelManagement() {
     if (!editingListing) return;
     setListings((prevListings) =>
       prevListings.map((listing) =>
-        listing.id === editingListing.id ? editingListing : listing
+        listing._id === editingListing._id ? editingListing : listing
       )
     );
     handleClose();
   };
 
-  const onSelectChange = (event) => {
-    setListing(event.target.value);
+  const handleHostelCreatorUpload = (response) => {
+    if (response && response.hostel) {
+      setListings((prevListings) => [...prevListings, response.hostel]);
+    }
+    setShowHostelCreator(false);
   };
 
-  const listingOptions = [
-    { value: 1, label: "last 7 days" },
-    { value: 2, label: "last week" },
-    { value: 3, label: "last month" },
-  ];
-  const handleAdCreatorUpload = (newListing) => {
-    setListings((prevListings) => [
-      ...prevListings,
-      {
-        id: prevListings.length + 1,
-        ...newListing,
-        image: BedImage,
-        beds: parseInt(newListing.beds) || 2,
-        bath: parseInt(newListing.bath) || 1,
-        person: parseInt(newListing.person) || 2,
-        price: parseInt(newListing.price) || 0,
-      },
-    ]);
-    setShowAdCreator(false);
+  // Helper function to get the first image URL from hostel images
+  const getFirstImageUrl = (hostel) => {
+    if (hostel.images && hostel.images.length > 0 && hostel.images[0].url) {
+      return hostel.images[0].url;
+    }
+    return BedImage;
+  };
+
+  // Helper function to get minimum room price
+  const getMinRoomPrice = (roomTypes) => {
+    if (!roomTypes || roomTypes.length === 0) return null;
+
+    const prices = roomTypes
+      .filter((room) => room.price)
+      .map((room) => room.price);
+
+    return prices.length > 0 ? Math.min(...prices) : null;
+  };
+
+  // Helper function to get location display text
+  const getLocationDisplay = (hostel) => {
+    if (hostel.addressId && hostel.addressId.city) {
+      return hostel.addressId.city;
+    }
+    if (hostel.addressId && hostel.addressId.district) {
+      return hostel.addressId.district;
+    }
+    return "Location not specified";
   };
 
   return (
     <div className=" bg-LightBackground rounded-lg p-4">
-      {!showAdCreator ? (
+      {/* Loading State */}
+      {isLoading && <Loader />}
+
+      {!showHostelCreator ? (
         <>
           <div className="bg-white shadow rounded-lg p-3 mb-4">
             <div className="flex sm:flex-wrap justify-between items-center">
               <Typography variant={"h3"} className="font-bold">
-                Listings
+                Hostel Listings
               </Typography>
               <div className="flex items-center gap-2">
-                <Dropdown
-                  value={listing}
-                  onSelectChange={onSelectChange}
-                  options={listingOptions}
-                  placeholder="last 7 days"
-                />
                 {role === "owner" && (
                   <Button
-                    text="Add New to Listings"
+                    text="Create New Hostel"
                     type="submit"
                     height="40px"
                     width="100%"
-                    onClick={() => setShowAdCreator(true)} // Show AdCreator component
+                    onClick={() => setShowHostelCreator(true)}
                     customColor={BackgroundColor}
                     bgColor={PrimaryColor}
                     className="px-3 sm:text-xs rounded-md"
@@ -167,79 +177,151 @@ export default function HostelManagement() {
               </div>
             </div>
           </div>
-          <div className="space-y-4">
-            {listings.map((listing) => (
-              <div
-                key={listing.id}
-                className="bg-white shadow rounded-lg overflow-hidden"
-              >
-                <div className="flex sm:flex-wrap">
-                  <img
-                    src={listing.image}
-                    alt={listing.title}
-                    className="w-40 h-auto sm:w-full object-cover"
-                  />
-                  <div className="flex-grow p-4">
-                    <div className="flex sm:flex-wrap justify-between items-start gap-2">
-                      <div>
-                        <Typography variant={"h4"} className="font-bold">
-                          {listing.title}
-                        </Typography>
-                        <Typography variant={"body1"} className="mt-1">
-                          {listing.description}
-                        </Typography>
+
+          {/* Error State */}
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              <Typography variant="body1">
+                Failed to load hostels. Please try refreshing.
+              </Typography>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!isLoading && listings.length === 0 && !error && (
+            <div className="bg-white shadow rounded-lg p-8 text-center">
+              <Typography variant="h5" className="text-gray-500 mb-2">
+                No Hostels Found
+              </Typography>
+              <Typography variant="body1" className="text-gray-400 mb-4">
+                You haven't created any hostels yet.
+              </Typography>
+              {role === "owner" && (
+                <Button
+                  text="Create Your First Hostel"
+                  type="button"
+                  height="45px"
+                  width="200px"
+                  onClick={() => setShowHostelCreator(true)}
+                  customColor={BackgroundColor}
+                  bgColor={PrimaryColor}
+                  className="rounded-md"
+                />
+              )}
+            </div>
+          )}
+
+          {/* Hostels List */}
+          {listings.length > 0 && (
+            <div className="space-y-4">
+              {listings.map((hostel) => (
+                <div
+                  key={hostel._id}
+                  className="bg-white shadow rounded-lg overflow-hidden"
+                >
+                  <div className="flex sm:flex-wrap">
+                    <img
+                      src={getFirstImageUrl(hostel)}
+                      alt={hostel.name}
+                      className="w-40 h-auto sm:w-full object-cover"
+                    />
+                    <div className="flex-grow p-4">
+                      <div className="flex sm:flex-wrap justify-between items-start gap-2">
+                        <div>
+                          <Typography variant={"h4"} className="font-bold">
+                            {hostel.name}
+                          </Typography>
+                          <Typography variant={"body1"} className="mt-1">
+                            {hostel.description}
+                          </Typography>
+                          {hostel.hostelType && (
+                            <Typography
+                              variant={"body2"}
+                              className="text-blue-600 mt-1"
+                            >
+                              {hostel.hostelType.charAt(0).toUpperCase() +
+                                hostel.hostelType.slice(1)}{" "}
+                              Hostel
+                            </Typography>
+                          )}
+                        </div>
+                        {role === "owner" && (
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <Button
+                              onClick={() => handleOpen(hostel)}
+                              text="Edit"
+                              type="submit"
+                              height="35px"
+                              width="100px"
+                              customColor={BackgroundColor}
+                              bgColor={PrimaryColor}
+                              className="sm:text-xs rounded-md"
+                            />
+                            <Button
+                              text="Delete"
+                              type="submit"
+                              height="35px"
+                              width="100px"
+                              customColor={BackgroundColor}
+                              bgColor={PrimaryColor}
+                              className="sm:text-xs rounded-md"
+                            />
+                          </div>
+                        )}
                       </div>
-                      {role === "owner" && (
-                        <div className="flex flex-col sm:flex-row gap-2">
-                          <Button
-                            onClick={() => handleOpen(listing)}
-                            text="Edit"
-                            type="submit"
-                            height="35px"
-                            width="100px"
-                            customColor={BackgroundColor}
-                            bgColor={PrimaryColor}
-                            className="sm:text-xs rounded-md"
-                          />
-                          <Button
-                            text="Delete"
-                            type="submit"
-                            height="35px"
-                            width="100px"
-                            customColor={BackgroundColor}
-                            bgColor={PrimaryColor}
-                            className="sm:text-xs rounded-md"
-                          />
+
+                      {/* Room Types Display */}
+                      {hostel.roomTypes && hostel.roomTypes.length > 0 && (
+                        <div className="mt-3">
+                          <Typography
+                            variant="body2"
+                            className="text-gray-600 mb-1"
+                          >
+                            Available Room Types:
+                          </Typography>
+                          <div className="flex flex-wrap gap-2">
+                            {hostel.roomTypes.map((room, index) => (
+                              <span
+                                key={index}
+                                className="bg-gray-100 px-2 py-1 rounded text-sm"
+                              >
+                                {room.type} - Rs. {room.price}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       )}
-                    </div>
-                    <div className="flex justify-between items-center mt-4">
-                      <span className="text-blue-600 font-bold">
-                        {listing.price}
-                      </span>
-                      <div className="flex items-center space-x-4">
-                        <div className="flex items-center">
-                          <BedOutlined
-                            fontSize="small"
-                            className="text-gray-500"
-                          />
-                          <span className="ml-1 text-sm">{listing.beds}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Bathtub fontSize="small" className="text-gray-500" />
-                          <span className="ml-1 text-sm">{listing.bath}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Person fontSize="small" className="text-gray-500" />
-                          <span className="ml-1 text-sm">{listing.person}</span>
+
+                      <div className="flex justify-between items-center mt-4">
+                        {getMinRoomPrice(hostel.roomTypes) && (
+                          <span className="text-blue-600 font-bold">
+                            Starting from Rs.{" "}
+                            {getMinRoomPrice(hostel.roomTypes)}
+                          </span>
+                        )}
+                        <div className="flex items-center space-x-4">
+                          {hostel.amenities && hostel.amenities.length > 0 && (
+                            <div className="flex items-center">
+                              <span className="text-sm text-gray-500">
+                                {hostel.amenities.length} amenities
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex items-center">
+                            <span className="text-sm text-gray-500">
+                              📍 {getLocationDisplay(hostel)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
+
+          {/* Edit Modal */}
           <Modal
             open={open}
             onClose={handleClose}
@@ -252,7 +334,7 @@ export default function HostelManagement() {
                 id="edit-listing-modal"
                 className="font-bold mb-4"
               >
-                Edit Listing
+                Edit Hostel Listing
               </Typography>
               {editingListing && (
                 <form onSubmit={(e) => e.preventDefault()} className="gap-2">
@@ -264,73 +346,19 @@ export default function HostelManagement() {
                       width="100%"
                       placeholder="Title"
                       type="text"
-                      name="title"
-                      value={editingListing.title}
+                      name="name"
+                      value={editingListing.name || ""}
                       onChange={handleChange}
                     />
                   </div>
                   <div className="flex flex-col">
                     <Typography variant={"body1"}>Description</Typography>
                     <TextAreaComponent
-                      value={editingListing.description}
+                      value={editingListing.description || ""}
                       onChange={handleChange}
                       name="description"
                       placeholder="Description"
                       rows={4}
-                    />
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 my-2">
-                    <div className="flex flex-col">
-                      <Typography variant={"body1"}>Beds</Typography>
-                      <InputField
-                        height="40px"
-                        isRequired={true}
-                        width="100%"
-                        placeholder="Beds"
-                        type="number"
-                        name="beds"
-                        value={editingListing.beds}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <Typography variant={"body1"}>Bath</Typography>
-                      <InputField
-                        height="40px"
-                        isRequired={true}
-                        width="100%"
-                        placeholder="Bath"
-                        type="number"
-                        name="bath"
-                        value={editingListing.bath}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <Typography variant={"body1"}>Person</Typography>
-                      <InputField
-                        isRequired={true}
-                        height="40px"
-                        width="100%"
-                        placeholder="Person"
-                        type="number"
-                        name="person"
-                        value={editingListing.person}
-                        onChange={handleChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <Typography variant={"body1"}>Price (Rs.)</Typography>
-                    <InputField
-                      height="40px"
-                      width="100%"
-                      isRequired={true}
-                      placeholder="Price (Rs.)"
-                      type="number"
-                      name="price"
-                      value={editingListing.price}
-                      onChange={handleChange}
                     />
                   </div>
 
@@ -362,10 +390,10 @@ export default function HostelManagement() {
           </Modal>
         </>
       ) : (
-        <AdCreator
-          onClose={() => setShowAdCreator(false)}
-          onUpload={handleAdCreatorUpload}
-        /> // Pass the onClose prop to handle back action
+        <HostelCreator
+          onClose={() => setShowHostelCreator(false)}
+          onUpload={handleHostelCreatorUpload}
+        />
       )}
     </div>
   );

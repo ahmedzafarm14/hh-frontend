@@ -10,8 +10,14 @@ import Tooltip from "@mui/material/Tooltip";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { useSelector, useDispatch } from "react-redux";
-import { setCurrentTab } from "../State/Slices/tabHandlerSlice.js";
+import {
+  setCurrentTab,
+  clearCurrentTab,
+} from "../State/Slices/tabHandlerSlice.js";
+import { clearUser } from "../State/Slices/userSlice.js";
+import { clearMessages } from "../State/Slices/messageHandlerSlice.js";
 import { useNavigate } from "react-router-dom";
+import { clearHostels } from "../State/Slices/hostelSlice.js";
 
 export default function AccountMenu() {
   const { firstName, lastName, image } = useSelector(
@@ -48,7 +54,13 @@ export default function AccountMenu() {
   };
 
   const handleLogout = () => {
-    // Add your logout functionality here
+    dispatch(clearUser());
+    dispatch(clearCurrentTab());
+    dispatch(clearMessages());
+    dispatch(clearHostels());
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
   };
 
   return (

@@ -61,14 +61,14 @@ export default function LoginPage() {
         }, 2000);
         dispatch(setUser(data));
         if (role === "resident") {
-          navigate("/hostels");
+          navigate("/");
         } else if (role === "owner") {
           navigate("/management");
         }
       }
     } catch (err) {
       console.error("Login error:", err);
-      dispatch(setErrorMessage(err.data?.message || "Login failed!"));
+      dispatch(setErrorMessage(err.data?.error || "Login failed!"));
       setTimeout(() => {
         dispatch(clearMessages());
       }, 3000);

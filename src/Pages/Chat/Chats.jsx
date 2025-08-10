@@ -170,7 +170,6 @@ export default function Chats() {
       socket.on("messages:read", onRoomUpdated);
       socket.on("room:updated", onRoomUpdated);
       socket.on("chat:room:updated", onRoomUpdated);
-
       return () => {
         socket.off("connect");
         socket.off("connect_error");
