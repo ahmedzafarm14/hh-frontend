@@ -63,9 +63,9 @@ const Layout = () => {
       <div className="fixed top-0 left-0 right-0 z-20">
         <Navbar />
       </div>
-      <div className="flex pt-16 h-full">
+      <div className="flex pt-16 h-[calc(100vh-64px)] min-h-0">
         {/* Main Page Content */}
-        <div className="flex-grow w-full px-4 pt-2 pb-3">{renderContent()}</div>
+        <div className="flex-grow w-full px-4 pt-2 pb-3 min-h-0">{renderContent()}</div>
       </div>
       <Sidebar />
     </div>

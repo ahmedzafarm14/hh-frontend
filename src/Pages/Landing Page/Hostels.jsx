@@ -13,6 +13,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import StarIcon from "@mui/icons-material/Star";
 import { Search as SearchIcon } from "@mui/icons-material";
 import Typography from "../../Theme/Typography";
@@ -22,6 +23,7 @@ import {
   TextColor,
 } from "../../Theme/ColorBoilerplate";
 import Button from "../../Components/Button";
+import { useCreateOrGetRoomMutation } from "../../State/Services/chatQueries.js";
 import topImage from "../../Assets/Images/topimage.svg";
 import topImage1 from "../../Assets/Images/topimage1.svg";
 import topImage2 from "../../Assets/Images/topimage2.svg";
@@ -49,6 +51,7 @@ const initialHotels = [
     rooms: 38,
     price: 2000,
     image: topImage,
+    ownerId: "689794db172ebecf9f990ac9",
     amenities: ["Wifi", "Kitchen"],
   },
   {
@@ -59,6 +62,7 @@ const initialHotels = [
     floors: 3,
     rooms: 18,
     price: 5000,
+    ownerId: "689794db172ebecf9f990ac9",
     image: topImage1,
     amenities: ["Wifi", "Laundry", "Air Condition"],
   },
@@ -69,6 +73,7 @@ const initialHotels = [
     rating: 2,
     floors: 4,
     rooms: 24,
+    ownerId: "689794db172ebecf9f990ac9",
     price: 8000,
     image: topImage2,
     amenities: ["Wifi", "Laundry", "Air Condition"],
@@ -77,6 +82,8 @@ const initialHotels = [
 
 export default function Component() {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+  const [createRoom, { isLoading: creatingRoom }] = useCreateOrGetRoomMutation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [hotels, setHotels] = useState(initialHotels);
@@ -96,6 +103,27 @@ export default function Component() {
       target: { value },
     } = event;
     setSelectedFilters(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const handleStartChat = async (hotel) => {
+    try {
+      if (!user || Object.keys(user).length === 0) {
+        navigate("/login");
+        return;
+      }
+      const participantId = hotel?.ownerId || hotel?.owner?._id || hotel?.ownerId?.toString?.();
+      if (!participantId) {
+        // No owner info available in demo data; block action gracefully
+        return;
+      }
+      const res = await createRoom({ participantId }).unwrap();
+      const roomId = res?.data?._id || res?.room?._id || res?._id;
+      if (roomId) {
+        navigate(`/chat?roomId=${roomId}`);
+      }
+    } catch (err) {
+      console.error("Failed to start chat", err);
+    }
   };
 
   return (
@@ -235,16 +263,29 @@ export default function Component() {
                         {hotel.location}
                       </Typography>
                     </Box>
-                    <Button
-                      text="Book Now"
-                      type="submit"
-                      height="37px"
-                      width="100%"
-                      customColor={BackgroundColor}
-                      bgColor={PrimaryColor}
-                      className="rounded-full px-5 h-auto border-none"
-                      onClick={() => navigate("/hostel-details")}
-                    />
+                    <div className="flex gap-2">
+                      <Button
+                        text="Book Now"
+                        type="submit"
+                        height="37px"
+                        width="100%"
+                        customColor={BackgroundColor}
+                        bgColor={PrimaryColor}
+                        className="rounded-full px-5 h-auto border-none"
+                        onClick={() => navigate("/hostel-details")}
+                      />
+                      <Button
+                        text={creatingRoom ? "Starting..." : "Chat with Owner"}
+                        type="button"
+                        height="37px"
+                        width="100%"
+                        customColor={BackgroundColor}
+                        bgColor={PrimaryColor}
+                        className="rounded-full px-5 h-auto border-none"
+                        onClick={() => handleStartChat(hotel)}
+                        disabled={!hotel?.ownerId || creatingRoom}
+                      />
+                    </div>
                   </Box>
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (
