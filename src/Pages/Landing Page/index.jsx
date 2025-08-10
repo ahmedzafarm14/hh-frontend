@@ -1,21 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CarouselComponent from "../../Components/Carousel";
 import Explore from "../../Components/Explore";
 import DiscoverMore from "../../Components/DiscoverMore";
 import Chatbot from "../../Components/Chatbot";
+import { getUserLocationFromIP } from "../../utils/IpLocation.js";
 
 export default function LandingPage() {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [location, setLocation] = useState(null);
+
+  // Location from IP
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const result = await getUserLocationFromIP();
+
+        // Format location for API call
+        const locationParams = {
+          longitude: result.coordinates[0],
+          latitude: result.coordinates[1],
+        };
+
+        setLocation(locationParams);
+      } catch (error) {
+        console.error("Error fetching location:", error);
+        // Set default location if IP location fails
+        const defaultLocation = {
+          longitude: 78.9629,
+          latitude: 20.5937, // Default to India center
+        };
+        setLocation(defaultLocation);
+      }
+    };
+    fetchLocation();
+  }, []);
+
   return (
     <>
       {/* Home */}
       <CarouselComponent />
 
-      {/* Hostels */}
-      <Explore />
+      {/* Hostels - Pass location to Explore */}
+      <Explore userLocation={location} />
 
-      {/* Hostels */}
-      <DiscoverMore />
+      {/* Hostels - Pass location to DiscoverMore */}
+      <DiscoverMore userLocation={location} />
 
       {/* Chatbot Button */}
       <button

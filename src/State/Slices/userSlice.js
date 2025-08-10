@@ -16,7 +16,7 @@ export const userSlice = createSlice({
       state.role = role;
       state.user = user;
     },
-    removeUser: (state) => {
+    clearUser: (state) => {
       state.user = {};
       state.token = null;
       state.role = null;
@@ -31,6 +31,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, removeUser, updateUserData } = userSlice.actions;
+export const { setUser, clearUser, updateUserData } = userSlice.actions;
 
 export default userSlice.reducer;

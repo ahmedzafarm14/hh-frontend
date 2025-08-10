@@ -9,6 +9,7 @@ import ResetPassword from "./Pages/ForgotPassword/ResetPassword.jsx";
 import EditProfile from "./Pages/EditProfile/EditProfile.jsx";
 import Advertisement from "./Pages/Advertisement/Advertisement.jsx";
 import HostelManagement from "./Pages/HostelManagement/HostelManagement.jsx";
+import BookingsHistory from "./Pages/BookingsHistory/BookingsHistory.jsx";
 import Chat from "./Pages/Chat/Chats.jsx";
 import LandLayout from "./Layout/LandLayout.jsx";
 import LandingPage from "./Pages/Landing Page/index.jsx";
@@ -40,6 +41,8 @@ const AppRoutes = () => {
           <Route path="/hostel-details" element={<HostelDetails />} />
           <Route path="/room-details" element={<RoomDetails />} />
           <Route path="/reserve" element={<Reserve />} />
+          <Route path="/bookings-history" element={<BookingsHistory />} />
+          <Route path="/chat" element={<Chat />} />
         </Route>
       )}
 
@@ -113,14 +116,6 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <EditProfile />
-              </Layout>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <Layout>
-                <Chat />
               </Layout>
             }
           />
