@@ -13,7 +13,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import StarIcon from "@mui/icons-material/Star";
 import { Search as SearchIcon } from "@mui/icons-material";
 import Typography from "../../Theme/Typography";
@@ -27,7 +27,6 @@ import { useCreateOrGetRoomMutation } from "../../State/Services/chatQueries.js"
 import topImage from "../../Assets/Images/topimage.svg";
 import { useGetHostelsForResidentQuery } from "../../State/Services/hostelQueries.js";
 import Loader from "../../Components/Loader.jsx";
-import { useDispatch, useSelector } from "react-redux";
 import { residentHostels } from "../../State/Slices/hostelSlice.js";
 
 const ITEM_HEIGHT = 48;
@@ -47,6 +46,8 @@ export default function Component() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hostelsFromState = useSelector((state) => state.hostel.hostels); // Fixed: was state.hostelSlice.hostels
+  const user = useSelector((state) => state.user.user);
+  const [createRoom, { isLoading: creatingRoom }] = useCreateOrGetRoomMutation();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState([]);
@@ -123,6 +124,8 @@ export default function Component() {
         description: hostel.description,
         hostelType: hostel.hostelType,
         distance: hostel.distance,
+        ownerId: hostel.ownerId || hostel.owner?._id, // Add ownerId for chat functionality
+        owner: hostel.owner, // Keep the full owner object as backup
       }));
 
       const filtered = processedHostels.filter(
@@ -152,24 +155,39 @@ export default function Component() {
   };
 
 
-  const handleStartChat = async (hotel) => {
+  const handleStartChat = async (hostel) => {
     try {
+      console.log("Starting chat with hostel:", hostel); // Debug log
+      
       if (!user || Object.keys(user).length === 0) {
+        console.log("No user found, redirecting to login");
         navigate("/login");
         return;
       }
-      const participantId = hotel?.ownerId || hotel?.owner?._id || hotel?.ownerId?.toString?.();
+      
+      const participantId = hostel?.ownerId || hostel?.owner?._id;
+      console.log("Participant ID:", participantId); // Debug log
+      
       if (!participantId) {
-        // No owner info available in demo data; block action gracefully
+        console.log("No owner info available for this hostel");
+        // You could show a toast notification here
+        alert("Owner information not available for this hostel");
         return;
       }
+      
       const res = await createRoom({ participantId }).unwrap();
+      console.log("Chat room created:", res); // Debug log
+      
       const roomId = res?.data?._id || res?.room?._id || res?._id;
       if (roomId) {
         navigate(`/chat?roomId=${roomId}`);
+      } else {
+        console.log("No room ID found in response");
+        alert("Failed to create chat room");
       }
     } catch (err) {
       console.error("Failed to start chat", err);
+      alert("Failed to start chat. Please try again.");
     }
   };
 
@@ -388,41 +406,34 @@ export default function Component() {
                     <div className="flex gap-2">
                       <Button
                         text="Book Now"
-                        type="submit"
+                        type="button"
                         height="37px"
-                        width="100%"
+                        width="auto"
                         customColor={BackgroundColor}
                         bgColor={PrimaryColor}
-                        className="rounded-full px-5 h-auto border-none"
-                        onClick={() => navigate("/hostel-details")}
+                        className="rounded-full px-5 h-auto border-none flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleHostelClick(hostel);
+                        }}
                       />
                       <Button
                         text={creatingRoom ? "Starting..." : "Chat with Owner"}
                         type="button"
                         height="37px"
-                        width="100%"
+                        width="auto"
                         customColor={BackgroundColor}
                         bgColor={PrimaryColor}
-                        className="rounded-full px-5 h-auto border-none"
-                        onClick={() => handleStartChat(hotel)}
-                        disabled={!hotel?.ownerId || creatingRoom}
+                        className="rounded-full px-5 h-auto border-none flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleStartChat(hostel);
+                        }}
+                        disabled={!hostel?.ownerId || creatingRoom}
                       />
                     </div>
 
-                    <Button
-                      text="Book Now"
-                      type="submit"
-                      height="37px"
-                      width="100%"
-                      customColor={BackgroundColor}
-                      bgColor={PrimaryColor}
-                      className="rounded-full px-5 h-auto border-none"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleHostelClick(hostel);
-                      }}
-                    />
-
+                    
                   </Box>
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (

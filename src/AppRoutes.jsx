@@ -105,6 +105,14 @@ const AppRoutes = () => {
               </Layout>
             }
           />
+          <Route
+            path="/chat"
+            element={
+              <Layout>
+                <Chat />
+              </Layout>
+            }
+          />
         </>
       )}
 

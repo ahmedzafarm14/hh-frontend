@@ -1,5 +1,5 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { emptySplitApi } from "../Services/emptySplitApi.js";
+import { emptySplitApi } from "../Services/emptySplitApi.jsx";
 import { chatApiBase } from "../Services/chatApiBase.js";
 import sessionStorage from "redux-persist/lib/storage/session";
 import { persistReducer, persistStore } from "redux-persist";

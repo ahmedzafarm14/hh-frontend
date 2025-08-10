@@ -275,16 +275,10 @@ export default function HotelListing() {
       <div className="text-BackgroundColor md:p-5 p-7 mt-24 space-y-4">
         {/* Header Section */}
         <div className="text-center space-y-2 mb-8">
-          <div className="flex justify-center gap-1">
-            <StarIcon className="w-5 h-5 fill-RatingColor text-RatingColor" />
-            <StarIcon className="w-5 h-5 text-AccentColor3" />
-            <StarIcon className="w-5 h-5 text-AccentColor3" />
-            <StarIcon className="w-5 h-5 text-AccentColor3" />
-            <StarIcon className="w-5 h-5 text-AccentColor3" />
-          </div>
+          
           <Typography variant={"h1"}>{hostelData.name}</Typography>
           <Typography variant="body1" className="my-3 sm:my-2 sm:text-xs">
-            {hostelData.address?.city || "Location not specified"}
+            {hostelData.address?.district || ""}
           </Typography>
           {hostelData.address?.addressDetails && (
             <Typography variant="body2" className="text-gray-400 sm:text-xs">
@@ -453,8 +447,6 @@ export default function HotelListing() {
           />
         </div>
 
-        {/* Review Section - Commented out as requested */}
-        {/* <ReviewCarousel /> */}
       </div>
     </Box>
   );

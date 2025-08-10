@@ -1,4 +1,4 @@
-import { emptySplitApi } from "./emptySplitApi.js";
+import { emptySplitApi } from "./emptySplitApi.jsx";
 
 export const hostelApi = emptySplitApi.injectEndpoints({
   endpoints: (builder) => ({

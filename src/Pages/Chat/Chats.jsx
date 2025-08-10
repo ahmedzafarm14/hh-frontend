@@ -31,6 +31,7 @@ export default function Chats() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const user = useSelector((state) => state.user.user || {});
   const meId = user?._id || user?.id || user?.userId || user?.uid || null;
+  const userRole = user?.role || "resident";
 
   const { data: roomsResp, isLoading: roomsLoading, isFetching: roomsFetching, refetch: refetchRooms, error: roomsError } = useGetMyRoomsQuery();
   const [sendMessage, { isLoading: sending }] = useSendMessageMutation();
@@ -317,8 +318,8 @@ export default function Chats() {
       setShowChatPanel(false);
     };
 
-    return (
-      <div className="flex h-[calc(100vh-64px)] min-h-0 gap-2">
+         return (
+       <div className={`flex h-[calc(100vh-80px)] min-h-0 gap-2 ${userRole === "owner" ? "" : "pt-20"}`}>
         {/* Left Sidebar */}
         <div
           className={`md:w-full w-1/3 bg-LightBackground rounded-lg  border-r border-gray-200 flex flex-col min-h-0 ${

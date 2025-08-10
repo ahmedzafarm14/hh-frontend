@@ -21,7 +21,7 @@ export default function Navbar() {
 
   const tabs =
     role === "owner"
-      ? ["Manage Hostels", "Advertise Hostels", "Bookings", "Chat"]
+      ? ["Manage Hostels", "Bookings", "Chat"] //"Advertise Hostels"
       : ["Home", "Hostels", "Chat"];
 
   const handleTabClick = (tab) => {

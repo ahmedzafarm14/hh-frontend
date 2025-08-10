@@ -3,13 +3,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const emptySplitApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-
     baseUrl: import.meta.env.VITE_BACKEND_PRODUCTION_URL,
-    prepareHeaders: (headers, { endpoint, getState }) => {
-
     //baseUrl: import.meta.env.VITE_BACKEND_LOCAL_URL,
-    prepareHeaders: (headers, { endpoint, getState, extra }) => {
-
+    prepareHeaders: (headers, { endpoint, getState }) => {
       const token = getState().user?.token;
 
       // Don't set Content-Type for endpoints that handle FormData
