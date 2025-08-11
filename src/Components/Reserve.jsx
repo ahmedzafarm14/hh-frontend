@@ -119,9 +119,6 @@ export default function ReserveForm() {
         roomType: roomType, // Selected room type
       };
 
-      console.log("User data:", user);
-      console.log("Sending booking data:", bookingData);
-
       // Send booking request to backend
       const response = await createBooking(bookingData).unwrap();
 
@@ -132,7 +129,6 @@ export default function ReserveForm() {
         dispatch(addBooking(response));
       } catch (reduxError) {
         console.error("Error adding booking to Redux store:", reduxError);
-        // Continue with success flow even if Redux update fails
       }
 
       // Show success message
@@ -144,7 +140,7 @@ export default function ReserveForm() {
       }, 1500);
     } catch (error) {
       console.error("Booking creation failed:", error);
-      dispatch(setErrorMessage("Failed to create booking. Please try again."));
+      dispatch(setErrorMessage(error.data?.error || "An error occurred."));
     } finally {
       setIsLoading(false);
     }

@@ -407,7 +407,7 @@ export default function Component() {
                       <Button
                         text="Book Now"
                         type="button"
-                        height="37px"
+                        height="auto"
                         width="auto"
                         customColor={BackgroundColor}
                         bgColor={PrimaryColor}
@@ -420,7 +420,7 @@ export default function Component() {
                       <Button
                         text={creatingRoom ? "Starting..." : "Chat with Owner"}
                         type="button"
-                        height="37px"
+                        height="auto"
                         width="auto"
                         customColor={BackgroundColor}
                         bgColor={PrimaryColor}
