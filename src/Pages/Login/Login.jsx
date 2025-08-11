@@ -17,6 +17,7 @@ import {
   setSuccessMessage,
   clearMessages,
 } from "../../State/Slices/messageHandlerSlice.js";
+import { clearHostels } from "../../State/Slices/hostelSlice.js";
 
 export default function LoginPage() {
   const [form, setForm] = useState({
@@ -63,6 +64,7 @@ export default function LoginPage() {
         if (role === "resident") {
           navigate("/");
         } else if (role === "owner") {
+          dispatch(clearHostels());
           navigate("/management");
         }
       }
