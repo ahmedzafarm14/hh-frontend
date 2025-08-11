@@ -247,7 +247,7 @@ export default function HostelManagement() {
                         </div>
                         {role === "owner" && (
                           <div className="flex flex-col sm:flex-row gap-2">
-                            <Button
+                            {/* <Button
                               onClick={() => handleOpen(hostel)}
                               text="Edit"
                               type="submit"
@@ -265,7 +265,7 @@ export default function HostelManagement() {
                               customColor={BackgroundColor}
                               bgColor={PrimaryColor}
                               className="sm:text-xs rounded-md"
-                            />
+                            /> */}
                           </div>
                         )}
                       </div>

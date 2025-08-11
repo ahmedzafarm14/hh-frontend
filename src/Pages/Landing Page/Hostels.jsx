@@ -40,14 +40,15 @@ const MenuProps = {
   },
 };
 
-const filterOptions = ["Wifi", "Laundry", "Kitchen", "Air Condition"];
+const filterOptions = ["Wifi", "Laundry", "Kitchen", "AC", "TV", "Parking"];
 
 export default function Component() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hostelsFromState = useSelector((state) => state.hostel.hostels); // Fixed: was state.hostelSlice.hostels
   const user = useSelector((state) => state.user.user);
-  const [createRoom, { isLoading: creatingRoom }] = useCreateOrGetRoomMutation();
+  const [createRoom, { isLoading: creatingRoom }] =
+    useCreateOrGetRoomMutation();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState([]);
@@ -154,30 +155,29 @@ export default function Component() {
     setSelectedFilters(typeof value === "string" ? value.split(",") : value);
   };
 
-
   const handleStartChat = async (hostel) => {
     try {
       console.log("Starting chat with hostel:", hostel); // Debug log
-      
+
       if (!user || Object.keys(user).length === 0) {
         console.log("No user found, redirecting to login");
         navigate("/login");
         return;
       }
-      
+
       const participantId = hostel?.ownerId || hostel?.owner?._id;
       console.log("Participant ID:", participantId); // Debug log
-      
+
       if (!participantId) {
         console.log("No owner info available for this hostel");
         // You could show a toast notification here
         alert("Owner information not available for this hostel");
         return;
       }
-      
+
       const res = await createRoom({ participantId }).unwrap();
       console.log("Chat room created:", res); // Debug log
-      
+
       const roomId = res?.data?._id || res?.room?._id || res?._id;
       if (roomId) {
         navigate(`/chat?roomId=${roomId}`);
@@ -432,8 +432,6 @@ export default function Component() {
                         disabled={!hostel?.ownerId || creatingRoom}
                       />
                     </div>
-
-                    
                   </Box>
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (
