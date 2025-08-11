@@ -30,8 +30,8 @@ export default function HostelManagement() {
   });
 
   const [listings, setListings] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [editingListing, setEditingListing] = useState(null);
+  // const [open, setOpen] = useState(false);
+  // const [editingListing, setEditingListing] = useState(null);
   const [showHostelCreator, setShowHostelCreator] = useState(false);
 
   // Effect to handle initial data loading and state management
@@ -82,35 +82,35 @@ export default function HostelManagement() {
     };
   }, []);
 
-  const handleOpen = (listing) => {
-    setEditingListing({ ...listing });
-    setOpen(true);
-  };
+  // const handleOpen = (listing) => {
+  //   setEditingListing({ ...listing });
+  //   setOpen(true);
+  // };
 
-  const handleClose = () => {
-    setOpen(false);
-    setEditingListing(null);
-  };
+  // const handleClose = () => {
+  //   setOpen(false);
+  //   setEditingListing(null);
+  // };
 
-  const handleChange = (e) => {
-    if (!editingListing) return;
-    const { name, value } = e.target;
-    setEditingListing((prevData) => ({
-      ...prevData,
-      [name]:
-        name === "title" || name === "description" ? value : Number(value),
-    }));
-  };
+  // const handleChange = (e) => {
+  //   if (!editingListing) return;
+  //   const { name, value } = e.target;
+  //   setEditingListing((prevData) => ({
+  //     ...prevData,
+  //     [name]:
+  //       name === "title" || name === "description" ? value : Number(value),
+  //   }));
+  // };
 
-  const handleUpdate = () => {
-    if (!editingListing) return;
-    setListings((prevListings) =>
-      prevListings.map((listing) =>
-        listing._id === editingListing._id ? editingListing : listing
-      )
-    );
-    handleClose();
-  };
+  // const handleUpdate = () => {
+  //   if (!editingListing) return;
+  //   setListings((prevListings) =>
+  //     prevListings.map((listing) =>
+  //       listing._id === editingListing._id ? editingListing : listing
+  //     )
+  //   );
+  //   handleClose();
+  // };
 
   const handleHostelCreatorUpload = (response) => {
     if (response && response.hostel) {
@@ -322,7 +322,7 @@ export default function HostelManagement() {
           )}
 
           {/* Edit Modal */}
-          <Modal
+          {/* <Modal
             open={open}
             onClose={handleClose}
             aria-labelledby="edit-listing-modal"
@@ -387,7 +387,7 @@ export default function HostelManagement() {
                 </form>
               )}
             </Box>
-          </Modal>
+          </Modal> */}
         </>
       ) : (
         <HostelCreator
