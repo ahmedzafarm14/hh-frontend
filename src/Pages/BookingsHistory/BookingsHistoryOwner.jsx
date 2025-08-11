@@ -1,47 +1,52 @@
 import React, { useEffect } from "react";
-import { CalendarToday, LocationOn, Hotel, Payment } from "@mui/icons-material";
-import { BackgroundColor, PrimaryColor } from "../../Theme/ColorBoilerplate.js";
+import {
+  CalendarToday,
+  Hotel,
+  Payment,
+  Person,
+  AccountCircle,
+} from "@mui/icons-material";
 import Typography from "../../Theme/Typography.jsx";
 import Loader from "../../Components/Loader.jsx";
 import { useSelector, useDispatch } from "react-redux";
-import { useGetResidentBookingsQuery } from "../../State/Services/bookingQueries";
-import { setBookings } from "../../State/Slices/bookingSlice";
+import { useGetOwnerBookingsQuery } from "../../State/Services/bookingQueries.js";
+import { setOwnerBookings } from "../../State/Slices/bookingSlice.js";
 import {
   setErrorMessage,
   clearMessages,
-} from "../../State/Slices/messageHandlerSlice";
-import ErrorMessage from "../../Components/ErrorMessage";
+} from "../../State/Slices/messageHandlerSlice.js";
+import ErrorMessage from "../../Components/ErrorMessage.jsx";
 
-export default function BookingsHistory() {
+export default function BookingsHistoryOwner() {
   const dispatch = useDispatch();
 
   // Get user from Redux store
   const user = useSelector((state) => state.user.user);
-  const bookings = useSelector((state) => state.booking.bookings);
+  const ownerBookings = useSelector((state) => state.booking.ownerBookings);
   const errorMessage = useSelector(
     (state) => state.messageHandler.errorMessage
   );
 
-  // RTK Query hook for fetching resident bookings
+  // RTK Query hook for fetching owner bookings
   const {
     data: bookingsData,
     isLoading,
     error,
-  } = useGetResidentBookingsQuery(user?._id, {
+  } = useGetOwnerBookingsQuery(user?._id, {
     skip: !user?._id, // Skip if user is not logged in
   });
 
   // Update Redux store when data is fetched
   useEffect(() => {
     if (bookingsData) {
-      dispatch(setBookings(bookingsData));
+      dispatch(setOwnerBookings(bookingsData));
     }
   }, [bookingsData, dispatch]);
 
   // Handle API errors
   useEffect(() => {
     if (error) {
-      console.error("Error fetching bookings:", error);
+      console.error("Error fetching owner bookings:", error);
       dispatch(
         setErrorMessage("Failed to load booking history. Please try again.")
       );
@@ -101,6 +106,33 @@ export default function BookingsHistory() {
     );
   }
 
+  // If user is not an owner, show access denied
+  if (user.role !== "owner") {
+    return (
+      <div className="pt-20 pb-8 px-4 min-h-screen bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white shadow rounded-lg p-8 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Person className="w-8 h-8 text-red-400" />
+            </div>
+            <Typography variant="h5" className="text-gray-500 mb-2">
+              Access Denied
+            </Typography>
+            <Typography variant="body1" className="text-gray-400 mb-4">
+              This page is only accessible to hostel owners.
+            </Typography>
+            <button
+              onClick={() => window.history.back()}
+              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors"
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -116,10 +148,10 @@ export default function BookingsHistory() {
           <div className="bg-white shadow rounded-lg p-6 mb-6">
             <div className="text-center">
               <Typography variant="h3" className="font-bold text-gray-800 mb-2">
-                My Booking History
+                Hostel Bookings Management
               </Typography>
               <Typography variant="body1" className="text-gray-600">
-                Track all your hostel bookings and reservations
+                Track all bookings for your hostels
               </Typography>
             </div>
           </div>
@@ -134,7 +166,7 @@ export default function BookingsHistory() {
           )}
 
           {/* Empty State */}
-          {bookings && bookings.length === 0 && !error && (
+          {ownerBookings && ownerBookings.length === 0 && !error && (
             <div className="bg-white shadow rounded-lg p-8 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CalendarToday className="w-8 h-8 text-gray-400" />
@@ -143,15 +175,15 @@ export default function BookingsHistory() {
                 No Bookings Found
               </Typography>
               <Typography variant="body1" className="text-gray-400">
-                You haven't made any bookings yet.
+                No bookings have been made for your hostels yet.
               </Typography>
             </div>
           )}
 
           {/* Bookings List */}
-          {bookings && bookings.length > 0 && (
+          {ownerBookings && ownerBookings.length > 0 && (
             <div className="space-y-6">
-              {bookings.map((booking) => (
+              {ownerBookings.map((booking) => (
                 <div
                   key={booking.bookingId}
                   className="bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
@@ -183,6 +215,33 @@ export default function BookingsHistory() {
                             </Typography>
                           </div>
 
+                          {/* Resident Information - Beautiful Display */}
+                          {booking.residentName && (
+                            <div className="mb-4">
+                              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <AccountCircle className="w-6 h-6 text-white" />
+                                  </div>
+                                  <div>
+                                    <Typography
+                                      variant="body2"
+                                      className="text-blue-600 font-medium mb-1"
+                                    >
+                                      Booked by Resident
+                                    </Typography>
+                                    <Typography
+                                      variant="h6"
+                                      className="font-semibold text-gray-800"
+                                    >
+                                      {booking.residentName}
+                                    </Typography>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
                           {/* Room Type and Price */}
                           <div className="flex flex-wrap items-center gap-4 mb-3 text-sm text-gray-600">
                             <div className="flex items-center gap-1">
@@ -191,7 +250,9 @@ export default function BookingsHistory() {
                             </div>
                             <div className="flex items-center gap-1">
                               <Payment className="w-4 h-4" />
-                              <span>{formatCurrency(booking.price)}</span>
+                              <span className="font-semibold text-green-600">
+                                {formatCurrency(booking.price)}
+                              </span>
                             </div>
                           </div>
 
@@ -222,7 +283,7 @@ export default function BookingsHistory() {
           )}
 
           {/* Summary Stats */}
-          {bookings && bookings.length > 0 && (
+          {ownerBookings && ownerBookings.length > 0 && (
             <div className="bg-white shadow rounded-lg p-6 mt-8">
               <Typography variant="h5" className="font-bold mb-4 text-center">
                 Booking Summary
@@ -232,7 +293,7 @@ export default function BookingsHistory() {
                   variant="h4"
                   className="font-bold text-blue-600 mb-2"
                 >
-                  {bookings.length}
+                  {ownerBookings.length}
                 </Typography>
                 <Typography variant="body2" className="text-gray-600">
                   Total Bookings

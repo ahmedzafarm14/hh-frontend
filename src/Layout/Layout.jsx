@@ -8,6 +8,7 @@ import { setCurrentTab } from "../State/Slices/tabHandlerSlice.js";
 import HostelManagement from "../Pages/HostelManagement/HostelManagement.jsx";
 import Advertisement from "../Pages/Advertisement/Advertisement.jsx";
 import EditProfile from "../Pages/EditProfile/EditProfile.jsx";
+import BookingsHistoryOwner from "../Pages/BookingsHistory/BookingsHistoryOwner.jsx";
 
 const Layout = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ const Layout = () => {
       case "Advertise Hostels":
         return <Advertisement />;
       case "Bookings":
-        return <div>Bookings</div>;
+        return <BookingsHistoryOwner />;
       case "Edit Profile":
         return <EditProfile />;
       default:
@@ -65,7 +66,9 @@ const Layout = () => {
       </div>
       <div className="flex pt-16 h-[calc(100vh-64px)] min-h-0">
         {/* Main Page Content */}
-        <div className="flex-grow w-full px-4 pt-2 pb-3 min-h-0">{renderContent()}</div>
+        <div className="flex-grow w-full px-4 pt-2 pb-3 min-h-0">
+          {renderContent()}
+        </div>
       </div>
       <Sidebar />
     </div>

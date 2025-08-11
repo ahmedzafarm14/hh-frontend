@@ -10,6 +10,7 @@ import EditProfile from "./Pages/EditProfile/EditProfile.jsx";
 import Advertisement from "./Pages/Advertisement/Advertisement.jsx";
 import HostelManagement from "./Pages/HostelManagement/HostelManagement.jsx";
 import BookingsHistory from "./Pages/BookingsHistory/BookingsHistory.jsx";
+import BookingsHistoryOwner from "./Pages/BookingsHistory/BookingsHistoryOwner.jsx";
 import Chat from "./Pages/Chat/Chats.jsx";
 import LandLayout from "./Layout/LandLayout.jsx";
 import LandingPage from "./Pages/Landing Page/index.jsx";
@@ -93,7 +94,7 @@ const AppRoutes = () => {
             path="/bookings"
             element={
               <Layout>
-                <div>Bookings</div>
+                <BookingsHistoryOwner />
               </Layout>
             }
           />

@@ -2,7 +2,7 @@ import React from "react";
 
 const SuccessMessage = ({ message }) => {
   return (
-    <div className="fixed top-4 right-4 z-50 animate-fade-in">
+    <div className="fixed top-4 right-4 z-[9999] animate-fade-in">
       <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg">
         <div className="flex items-center">
           <svg

@@ -4,11 +4,9 @@ export const emptySplitApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND_PRODUCTION_URL,
-    //baseUrl: import.meta.env.VITE_BACKEND_LOCAL_URL,
+    // baseUrl: import.meta.env.VITE_BACKEND_LOCAL_URL,
     prepareHeaders: (headers, { endpoint, getState }) => {
       const token = getState().user?.token;
-
-      // Don't set Content-Type for endpoints that handle FormData
       if (
         endpoint !== "updateProfile" &&
         endpoint !== "addHostel" &&

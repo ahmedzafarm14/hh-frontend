@@ -7,11 +7,12 @@ import userReducer from "../Slices/userSlice.js";
 import messageHandlerReducer from "../Slices/messageHandlerSlice.js";
 import tabHandlerReducer from "../Slices/tabHandlerSlice.js";
 import hostelReducer from "../Slices/hostelSlice.js";
+import bookingReducer from "../Slices/bookingSlice.js";
 
 const persistConfig = {
   key: "root",
   storage: sessionStorage,
-  whitelist: ["user", "tabHandler", "hostel"], // added hostel to persisted slices
+  whitelist: ["user", "tabHandler", "hostel", "booking"], // added hostel to persisted slices
 };
 
 // Combine all reducers
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   user: userReducer,
   messageHandler: messageHandlerReducer,
   tabHandler: tabHandlerReducer,
-  hostel: hostelReducer, // added hostel reducer
+  hostel: hostelReducer,
+  booking: bookingReducer,
   [emptySplitApi.reducerPath]: emptySplitApi.reducer,
   [chatApiBase.reducerPath]: chatApiBase.reducer,
 });
