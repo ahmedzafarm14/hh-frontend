@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import ReviewCarousel from "../Components/ReviewCarousel";
-import Image1 from "../Assets/Images/bed1.svg";
-import Image2 from "../Assets/Images/bed2.svg";
-import Image3 from "../Assets/Images/bed3.svg";
 import Typography from "../Theme/Typography";
 import Button from "./Button";
 import { BackgroundColor, PrimaryColor } from "../Theme/ColorBoilerplate";
@@ -52,17 +49,6 @@ export default function RoomDetails() {
     },
   ];
 
-  const images = [
-    { src: Image1, alt: "Bright room view" },
-    { src: Image3, alt: "Bedding detail" },
-    {
-      src: Image1,
-      alt: "Evening room ambiance",
-    },
-    { src: Image2, alt: "Dark room view" },
-    { src: Image2, alt: "Window view" },
-  ];
-
   const [selectedDate, setSelectedDate] = useState(dayjs());
 
   const features = [
@@ -105,56 +91,6 @@ export default function RoomDetails() {
           ))}
         </Grid>
 
-        <Box className="grid grid-cols-3 sm:grid-cols-1 gap-4 relative">
-          {/* First row */}
-          <Box className="relative h-64 rounded-lg overflow-hidden">
-            <img
-              src={images[0].src}
-              alt={images[0].alt}
-              fill
-              className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-            />
-          </Box>
-
-          {/* Center large image */}
-          <Box className="relative h-[calc(100%)] row-span-2 rounded-lg overflow-hidden md:col-span-1">
-            <img
-              src={images[1].src}
-              alt={images[1].alt}
-              fill
-              className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-            />
-          </Box>
-
-          {/* Right top image */}
-          <Box className="relative h-64 rounded-lg overflow-hidden">
-            <img
-              src={images[2].src}
-              alt={images[2].alt}
-              fill
-              className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-            />
-          </Box>
-
-          {/* Bottom row */}
-          <Box className="relative h-64 rounded-lg overflow-hidden">
-            <img
-              src={images[3].src}
-              alt={images[3].alt}
-              fill
-              className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-            />
-          </Box>
-
-          <Box className="relative h-64 rounded-lg overflow-hidden">
-            <img
-              src={images[4].src}
-              alt={images[4].alt}
-              fill
-              className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-            />
-          </Box>
-        </Box>
         <Box className="py-4">
           <div className="grid grid-cols-2 sm:grid-cols-1 justify-between gap-4 mt-4">
             {/* Features Section */}

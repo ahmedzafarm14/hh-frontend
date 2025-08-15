@@ -4,7 +4,6 @@ import { BackgroundColor, PrimaryColor } from "../../Theme/ColorBoilerplate.js";
 import Button from "../../Components/Button.jsx";
 import Dropdown from "../../Components/Dropdown.jsx";
 import Typography from "../../Theme/Typography.jsx";
-import BedImage from "../../Assets/Images/Beds.svg";
 import { Modal, Box } from "@mui/material";
 import InputField from "../../Components/InputField.jsx";
 import HostelCreator from "../../Components/HostelCreator.jsx";
@@ -231,7 +230,7 @@ export default function Advertisement() {
                       src={
                         hostel.images && hostel.images.length > 0
                           ? hostel.images[0]
-                          : BedImage
+                          : ""
                       }
                       alt={hostel.name}
                       className="w-40 h-auto sm:w-full object-cover"

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import StarIcon from "@mui/icons-material/Star";
 import Button from "./Button";
 import { PrimaryColor, BackgroundColor } from "../Theme/ColorBoilerplate";
-import topImage from "../Assets/Images/topimage.svg";
 import Typography from "../Theme/Typography";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { useGetHostelsForResidentQuery } from "../State/Services/hostelQueries.js";
@@ -59,9 +58,7 @@ export default function Component({ userLocation }) {
         location: hostel.address?.city || "",
         addressDetails: hostel.address?.addressDetails || "",
         image:
-          hostel.images && hostel.images.length > 0
-            ? hostel.images[0].url
-            : topImage,
+          hostel.images && hostel.images.length > 0 ? hostel.images[0].url : "",
         rating: hostel.rating || 0,
         description: hostel.description,
         hostelType: hostel.hostelType,

@@ -24,7 +24,6 @@ import {
 } from "../../Theme/ColorBoilerplate";
 import Button from "../../Components/Button";
 import { useCreateOrGetRoomMutation } from "../../State/Services/chatQueries.js";
-import topImage from "../../Assets/Images/topimage.svg";
 import { useGetHostelsForResidentQuery } from "../../State/Services/hostelQueries.js";
 import Loader from "../../Components/Loader.jsx";
 import { residentHostels } from "../../State/Slices/hostelSlice.js";
@@ -118,9 +117,7 @@ export default function Component() {
               ) // Fixed: use pricePerMonth
             : 0,
         image:
-          hostel.images && hostel.images.length > 0
-            ? hostel.images[0].url
-            : topImage, // fallback image
+          hostel.images && hostel.images.length > 0 ? hostel.images[0].url : "", // fallback image
         amenities: hostel.amenities || [],
         description: hostel.description,
         hostelType: hostel.hostelType,

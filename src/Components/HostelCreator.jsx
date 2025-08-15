@@ -97,7 +97,7 @@ export default function HostelCreator({ onClose, onUpload }) {
         ...prev.roomTypes,
         [roomTypeId]: {
           ...prev.roomTypes[roomTypeId],
-          [field]: field === "price" ? Number(value) : value,
+          [field]: field === "price" ? parseInt(value, 10) : value,
         },
       },
     }));
@@ -112,18 +112,15 @@ export default function HostelCreator({ onClose, onUpload }) {
     }));
   };
 
-  // Single input field that handles both single and multiple file selection
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     const remainingSlots = 6 - files.length;
 
     if (selectedFiles.length > 0) {
-      // Take only the files that fit within the 6-image limit
       const newFiles = selectedFiles.slice(0, remainingSlots);
       const updatedFiles = [...files, ...newFiles];
       setFiles(updatedFiles);
 
-      // Create previews for new files
       const newPreviews = newFiles.map((file) => ({
         name: file.name,
         url: URL.createObjectURL(file),
@@ -161,6 +158,7 @@ export default function HostelCreator({ onClose, onUpload }) {
           },
         },
       }));
+
       dispatch(setSuccessMessage("Location fetched successfully"));
       setTimeout(() => {
         dispatch(clearMessages());
@@ -178,7 +176,6 @@ export default function HostelCreator({ onClose, onUpload }) {
   const handleSubmit = async () => {
     dispatch(clearMessages());
 
-    // Validate required fields
     if (!adData.name.trim()) {
       dispatch(setErrorMessage("Please enter hostel name"));
       setTimeout(() => {
@@ -211,7 +208,6 @@ export default function HostelCreator({ onClose, onUpload }) {
       return;
     }
 
-    // Check if at least one room type is selected
     const hasRoomType = Object.values(adData.roomTypes).some(
       (room) => room.available
     );
@@ -223,7 +219,6 @@ export default function HostelCreator({ onClose, onUpload }) {
       return;
     }
 
-    // Check if all selected room types have prices
     const selectedRoomTypes = Object.entries(adData.roomTypes).filter(
       ([_, room]) => room.available
     );
@@ -243,16 +238,25 @@ export default function HostelCreator({ onClose, onUpload }) {
     try {
       const formData = new FormData();
 
-      // Structure the hostel data
+      // Filter out room types that are not available
+      const selectedRoomTypes = Object.entries(adData.roomTypes).reduce(
+        (acc, [roomTypeId, roomData]) => {
+          if (roomData.available) {
+            acc[roomTypeId] = roomData;
+          }
+          return acc;
+        },
+        {}
+      );
+
       const hostelData = {
         name: adData.name,
         description: adData.description,
         hostelType: adData.hostelType,
-        roomTypes: adData.roomTypes,
+        roomTypes: selectedRoomTypes,
         amenities: adData.amenities,
       };
 
-      // Structure the location data
       const locationData = {
         city: adData.location.city || "",
         district: adData.location.district || "",
@@ -264,38 +268,27 @@ export default function HostelCreator({ onClose, onUpload }) {
         },
       };
 
-      // Append hostel data as JSON string
       formData.append("hostel", JSON.stringify(hostelData));
-
-      // Append location data as JSON string
       formData.append("location", JSON.stringify(locationData));
 
-      // Append images as files
       files.forEach((file) => {
         formData.append("images", file);
       });
 
-      // Call the addHostel mutation
       const response = await addHostel(formData).unwrap();
-
-      // Handle successful response
+      console.log(response);
       dispatch(setSuccessMessage("Hostel created successfully!"));
-
-      // Update the hostel state with the new hostel
       dispatch(addHostelToState(response.hostel || response));
 
-      // Call the onUpload callback with the response data
       if (onUpload) {
         onUpload(response);
       }
 
-      // Close the form after successful submission
       setTimeout(() => {
         dispatch(clearMessages());
         onClose();
       }, 2000);
     } catch (error) {
-      // Handle different types of errors
       let errorMsg = "Failed to create hostel. Please try again.";
 
       if (error?.data?.message) {
@@ -321,17 +314,11 @@ export default function HostelCreator({ onClose, onUpload }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Loading Overlay */}
       {(isAddingHostel || isLoadingLocation) && <Loader />}
-
-      {/* Success Message */}
       {successMessage && <SuccessMessage message={successMessage} />}
-
-      {/* Error Message */}
       {errorMessage && <ErrorMessage message={errorMessage} />}
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
             <IconButton
@@ -353,7 +340,6 @@ export default function HostelCreator({ onClose, onUpload }) {
         </div>
 
         <div className="space-y-6">
-          {/* Basic Information */}
           <Paper elevation={2} className="p-6 rounded-xl">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -419,7 +405,6 @@ export default function HostelCreator({ onClose, onUpload }) {
             </div>
           </Paper>
 
-          {/* Images Upload */}
           <Paper elevation={2} className="p-6 rounded-xl">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -464,7 +449,6 @@ export default function HostelCreator({ onClose, onUpload }) {
               </div>
             )}
 
-            {/* Image Previews */}
             {previews.length > 0 && (
               <div>
                 <Typography
@@ -501,7 +485,6 @@ export default function HostelCreator({ onClose, onUpload }) {
             )}
           </Paper>
 
-          {/* Room Types */}
           <Paper elevation={2} className="p-6 rounded-xl">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
@@ -564,7 +547,6 @@ export default function HostelCreator({ onClose, onUpload }) {
             </div>
           </Paper>
 
-          {/* Amenities */}
           <Paper elevation={2} className="p-6 rounded-xl">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
@@ -594,7 +576,6 @@ export default function HostelCreator({ onClose, onUpload }) {
             </div>
           </Paper>
 
-          {/* Location */}
           <Paper elevation={2} className="p-6 rounded-xl">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
@@ -695,7 +676,6 @@ export default function HostelCreator({ onClose, onUpload }) {
             </Grid>
           </Paper>
 
-          {/* Preview Section - At the end */}
           <Paper elevation={2} className="p-6 rounded-xl">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -707,7 +687,6 @@ export default function HostelCreator({ onClose, onUpload }) {
             </div>
 
             <div className="space-y-4">
-              {/* Main Image */}
               {previews.length > 0 ? (
                 <img
                   src={previews[0].url}
@@ -728,7 +707,6 @@ export default function HostelCreator({ onClose, onUpload }) {
                 </div>
               )}
 
-              {/* Hostel Info */}
               <div className="space-y-3">
                 <Typography variant="h5" className="font-bold text-gray-900">
                   {adData.name || "Hostel Name"}
@@ -761,7 +739,6 @@ export default function HostelCreator({ onClose, onUpload }) {
                   </div>
                 )}
 
-                {/* Room Types */}
                 {Object.values(adData.roomTypes).some(
                   (room) => room.available
                 ) && (
@@ -789,7 +766,6 @@ export default function HostelCreator({ onClose, onUpload }) {
                   </div>
                 )}
 
-                {/* Amenities */}
                 {adData.amenities.length > 0 && (
                   <div>
                     <Typography
@@ -811,7 +787,6 @@ export default function HostelCreator({ onClose, onUpload }) {
                   </div>
                 )}
 
-                {/* Location */}
                 {adData.location.addressDetails && (
                   <div>
                     <Typography
@@ -835,7 +810,6 @@ export default function HostelCreator({ onClose, onUpload }) {
             </div>
           </Paper>
 
-          {/* Submit Button */}
           <Paper elevation={2} className="p-6 rounded-xl">
             <Button
               text={isAddingHostel ? "Creating Hostel..." : "Create Hostel"}

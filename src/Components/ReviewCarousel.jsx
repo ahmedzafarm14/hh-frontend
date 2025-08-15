@@ -1,49 +1,23 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Card, IconButton, Rating } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Avatar from "../Assets/Images/avatar.svg";
-import Avatar1 from "../Assets/Images/avatar1.svg";
 import Typography from "../Theme/Typography";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Allana George",
-    image: Avatar,
-    rating: 1,
-    text: "I have been living here since 6 months, and the experience is quite satisfactory. Rooms are well furnished and clean. It truly feels like a home away from home.",
-  },
-  {
-    id: 2,
-    name: "Sarah K.",
-    image: Avatar1,
-    rating: 5,
-    text: "Amazing experience! The duplex layout gave us extra privacy, and the room was extremely comfortable. Highly recommend it for families!",
-  },
-  {
-    id: 3,
-    name: "Jane Smith",
-    image: Avatar,
-    rating: 4,
-    text: "Great place to stay. Very comfortable and well maintained.",
-  },
-];
-
 export default function TestimonialCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  // const nextSlide = () => {
+  //   setCurrentIndex((prevIndex) =>
+  //     prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
+  //   );
+  // };
 
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
-    );
-  };
+  // const prevSlide = () => {
+  //   setCurrentIndex((prevIndex) =>
+  //     prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
+  //   );
+  // };
 
   return (
     <div className="pt-12">
@@ -57,7 +31,7 @@ export default function TestimonialCarousel() {
 
         <div className="relative flex justify-center items-center overflow-hidden">
           <IconButton
-            onClick={prevSlide}
+            // onClick={prevSlide}
             className="absolute left-0 z-10"
             aria-label="Previous testimonial"
           >
@@ -67,11 +41,13 @@ export default function TestimonialCarousel() {
           <div className="relative w-full overflow-hidden">
             <div
               className="flex transition-transform duration-500 ease-in-out"
-              style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
-              }}
+              style={
+                {
+                  // transform: `translateX(-${currentIndex * 100}%)`,
+                }
+              }
             >
-              {testimonials.map((testimonial) => (
+              {/* {testimonials.map((testimonial) => (
                 <div
                   key={testimonial.id}
                   className="min-w-full flex justify-center"
@@ -110,12 +86,12 @@ export default function TestimonialCarousel() {
                     </div>
                   </Card>
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
 
           <IconButton
-            onClick={nextSlide}
+            // onClick={nextSlide}
             className="absolute right-0 z-10"
             aria-label="Next testimonial"
           >
