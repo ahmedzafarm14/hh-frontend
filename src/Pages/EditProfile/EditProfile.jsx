@@ -74,6 +74,7 @@ const EditProfile = () => {
       setProfileImage(null); // Reset image on load
       setImagePreview(null); // Reset preview
     }
+    dispatch(clearMessages());
   }, [user]);
 
   const handleChange = (e) => {
