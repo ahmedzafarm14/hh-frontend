@@ -277,11 +277,42 @@ export default function Component() {
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {selected.map((value) => (
-                      <Chip key={value} label={value} />
+                      <Chip
+                        key={value}
+                        label={value}
+                        sx={{
+                          bgcolor: BackgroundColor, // Background color for the chip
+                          color: "black", // Text color for the chip (black text)
+                          borderColor: "black", // Border color for visibility
+                          borderWidth: 1,
+                        }}
+                      />
                     ))}
                   </Box>
                 )}
                 MenuProps={MenuProps}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    color: "black", // Ensure text inside the select is black
+                    backgroundColor: BackgroundColor, // Set background color for select input
+                    "& fieldset": {
+                      borderColor: "black", // Border color of the select input
+                    },
+                  },
+                  "& .MuiSelect-icon": {
+                    color: "white", // Only change the color of the dropdown arrow (icon)
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "black", // Set label text color to black
+                  },
+                  "& .MuiMenuItem-root": {
+                    color: "black", // Option text color (black text)
+                    backgroundColor: "white", // Set a background color to make options stand out
+                  },
+                  "& .MuiMenuItem-root:hover": {
+                    backgroundColor: "#f5f5f5", // Slight hover effect for visibility
+                  },
+                }}
               >
                 {filterOptions.map((option) => (
                   <MenuItem key={option} value={option}>
