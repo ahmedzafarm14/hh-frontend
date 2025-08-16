@@ -446,7 +446,7 @@ export default function Component() {
                         }}
                       />
                       <Button
-                        text={creatingRoom ? "Starting..." : "Chat with Owner"}
+                        text={"Chat with Owner"}
                         type="button"
                         height="auto"
                         width="auto"

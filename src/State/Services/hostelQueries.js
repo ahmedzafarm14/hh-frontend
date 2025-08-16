@@ -32,9 +32,9 @@ export const hostelApi = emptySplitApi.injectEndpoints({
     }),
 
     deleteHostel: builder.mutation({
-      query: (id) => ({
+      query: (hostelId) => ({
         method: "DELETE",
-        url: `/api/hostel/delete-hostel/${id}`,
+        url: `/api/hostel/delete-hostel/${hostelId}`,
       }),
     }),
   }),

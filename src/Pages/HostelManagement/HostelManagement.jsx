@@ -4,14 +4,28 @@ import Button from "../../Components/Button.jsx";
 import Typography from "../../Theme/Typography.jsx";
 import HostelCreator from "../../Components/HostelCreator.jsx";
 import { useSelector, useDispatch } from "react-redux";
-import { useGetHostelsForOwnerQuery } from "../../State/Services/hostelQueries.js";
+import {
+  useGetHostelsForOwnerQuery,
+  useDeleteHostelMutation,
+} from "../../State/Services/hostelQueries.js";
 import { setHostels } from "../../State/Slices/hostelSlice.js";
 import Loader from "../../Components/Loader.jsx";
+import SuccessMessage from "../../Components/SuccessMessage.jsx";
+import ErrorMessage from "../../Components/ErrorMessage.jsx";
+import {
+  setErrorMessage,
+  setSuccessMessage,
+  clearMessages,
+} from "../../State/Slices/messageHandlerSlice.js";
 
 export default function HostelManagement() {
   const role = useSelector((state) => state.user.role);
   const dispatch = useDispatch();
   const hostelsFromState = useSelector((state) => state.hostel.hostels);
+  const [deleteHostel] = useDeleteHostelMutation();
+  const { errorMessage, successMessage } = useSelector(
+    (state) => state.messageHandler
+  );
 
   // Fetch hostels from backend
   const {
@@ -49,32 +63,34 @@ export default function HostelManagement() {
     }
   }, [hostelsFromAPI, dispatch]);
 
-  useEffect(() => {
-    // Create a ResizeObserver instance with an empty callback
-    const resizeObserver = new ResizeObserver(() => {});
+  // Handle Delete
+  const handleDelete = async (e, hostel) => {
+    e.preventDefault();
+    dispatch(clearMessages());
+    const hostelId = hostel._id;
 
-    // Observe the document body
-    resizeObserver.observe(document.body);
+    try {
+      const response = await deleteHostel(hostelId).unwrap();
+      console.log(response);
+      dispatch(
+        setSuccessMessage(response.message || "Hostel Deleted Successfully")
+      );
 
-    // Cleanup function
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
+      setListings((prev) => prev.filter((listing) => listing._id !== hostelId));
+      console.log(listings);
+      dispatch(setHostels(listings));
 
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver(() => {
-      // Intentionally left empty to avoid undelivered notifications
-    });
-
-    document.querySelectorAll(".resize-observe").forEach((el) => {
-      resizeObserver.observe(el);
-    });
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
+      setTimeout(() => {
+        dispatch(clearMessages());
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+      dispatch(setErrorMessage(error?.data?.error || "Hostel Deletion Failed"));
+      setTimeout(() => {
+        dispatch(clearMessages());
+      }, 2000);
+    }
+  };
 
   // const handleOpen = (listing) => {
   //   setEditingListing({ ...listing });
@@ -147,7 +163,8 @@ export default function HostelManagement() {
     <div className=" bg-LightBackground rounded-lg p-4">
       {/* Loading State */}
       {isLoading && <Loader />}
-
+      {errorMessage && <ErrorMessage message={errorMessage} />}
+      {successMessage && <SuccessMessage message={successMessage} />}
       {!showHostelCreator ? (
         <>
           <div className="bg-white shadow rounded-lg p-3 mb-4">
@@ -251,15 +268,17 @@ export default function HostelManagement() {
                               bgColor={PrimaryColor}
                               className="sm:text-xs rounded-md"
                             />
+                            */}
                             <Button
                               text="Delete"
-                              type="submit"
+                              type="button"
                               height="35px"
                               width="100px"
+                              onClick={(e) => handleDelete(e, hostel)}
                               customColor={BackgroundColor}
                               bgColor={PrimaryColor}
                               className="sm:text-xs rounded-md"
-                            /> */}
+                            />
                           </div>
                         )}
                       </div>
