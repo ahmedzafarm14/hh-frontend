@@ -27,6 +27,8 @@ export default function HostelManagement() {
     (state) => state.messageHandler
   );
 
+  const [apiLoading, setApiLoading] = useState(false);
+
   // Fetch hostels from backend
   const {
     data: hostelsFromAPI,
@@ -68,7 +70,7 @@ export default function HostelManagement() {
     e.preventDefault();
     dispatch(clearMessages());
     const hostelId = hostel._id;
-
+    setApiLoading(true);
     try {
       const response = await deleteHostel(hostelId).unwrap();
       console.log(response);
@@ -79,6 +81,7 @@ export default function HostelManagement() {
       setListings((prev) => prev.filter((listing) => listing._id !== hostelId));
       console.log(listings);
       dispatch(setHostels(listings));
+      setApiLoading(false);
 
       setTimeout(() => {
         dispatch(clearMessages());
@@ -86,6 +89,7 @@ export default function HostelManagement() {
     } catch (error) {
       console.error(error);
       dispatch(setErrorMessage(error?.data?.error || "Hostel Deletion Failed"));
+      setApiLoading(false);
       setTimeout(() => {
         dispatch(clearMessages());
       }, 2000);
@@ -162,7 +166,7 @@ export default function HostelManagement() {
   return (
     <div className=" bg-LightBackground rounded-lg p-4">
       {/* Loading State */}
-      {isLoading && <Loader />}
+      {(isLoading || apiLoading) && <Loader />}
       {errorMessage && <ErrorMessage message={errorMessage} />}
       {successMessage && <SuccessMessage message={successMessage} />}
       {!showHostelCreator ? (
