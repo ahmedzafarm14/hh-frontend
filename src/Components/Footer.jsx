@@ -6,7 +6,7 @@ export default function Footer() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Hostels", href: "/hostels" },
-    { name: "Contact Us", href: "/contact" },
+    // { name: "Contact Us", href: "/contact" },
   ];
 
   return (
